@@ -1,0 +1,14 @@
+<component name="libraryTable">
+  <library name="elearning-app">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/config.zip!/" />
+      <root url="jar://$PROJECT_DIR$/gateway.zip!/" />
+      <root url="jar://$PROJECT_DIR$/auth.zip!/" />
+      <root url="jar://$PROJECT_DIR$/elearning-sdk.zip!/" />
+      <root url="jar://$PROJECT_DIR$/discovery.zip!/" />
+      <root url="jar://$PROJECT_DIR$/theme.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

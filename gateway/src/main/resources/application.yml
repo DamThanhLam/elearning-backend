@@ -1,0 +1,75 @@
+spring:
+  cloud:
+    gateway:
+      server:
+        webflux:
+          metrics:
+            enabled: true
+          default-filters:
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 10
+                redis-rate-limiter.burstCapacity: 20
+                redis-rate-limiter.requestedTokens: 1
+          routes:
+            - id: auth_route
+              uri: lb://auth-service
+              predicates:
+                - Path=/api/v1/login,/api/v1/forgot-password/verify,/api/v1/forgot-password/send-otp
+              filters:
+                - name: CircuitBreaker
+                  args:
+                    name: authCB
+                    fallbackUri: forward:/fallback/circuit-breaker/auths
+            - id: user_route_not_authentication
+              uri: lb://user-service
+              predicates:
+                - Path=/api/v1/users/sign-up
+              filters:
+                - name: CircuitBreaker
+                  args:
+                    name: userCB
+                    fallbackUri: forward:/fallback/circuit-breaker/users
+            - id: user_route
+              uri: lb://user-service
+              predicates:
+                - Path=/api/v1/users/{segment}
+              filters:
+                - name: CircuitBreaker
+                  args:
+                    name: userCB
+                    fallbackUri: forward:/fallback/circuit-breaker/users
+                - name: Authentication
+            - id: ui_service
+              uri: lb://ui-service
+              predicates:
+                - Path=/error,/css/{segment},/js/{segment},/fonts/{segment},/images/{segment},/ui/{segment}
+              filters:
+                - RewritePath=/ui/?(?<segment>.*), /$\{segment}
+resilience4j:
+  circuitbreaker:
+    configs:
+      defaultConfig:
+        sliding-window-size: 10
+        failure-rate-threshold: 50
+        wait-duration-in-open-state:
+          seconds: 30
+        permitted-number-of-calls-in-half-open-state: 3
+    instances:
+      authCB:
+        base-config: defaultConfig
+      userDB:
+        base-config: defaultConfig
+management:
+  health:
+    mongodb:
+      enabled: false
+  endpoint:
+    gateway:
+      access: read_only
+    prometheus:
+      access: read_only
+  endpoints:
+    web:
+      exposure:
+        include: health,info,gateway,metrics,prometheus

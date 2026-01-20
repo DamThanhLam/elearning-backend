@@ -1,0 +1,38 @@
+spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${USERNAME_EMAIL}
+    password: ${PASSWORD_EMAIL}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+  data:
+    mongodb:
+      auto-index-creation: true
+    redis:
+      cluster:
+        maxRedirects: 5
+        nodes: redis-12000.cluster.local:12000
+      url: redis://default:@redis-12000.cluster.local:12000
+      ssl:
+        enabled: true
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 0
+        cluster:
+          refresh:
+            adaptive: true
+            period: 30s
+      timeout: 10
+  mongodb:
+    uri: mongodb+srv://ldamthanh62:${PASSWORD_MONGODB}@cluster0.tg8mcdl.mongodb.net/elearning?appName=Cluster0
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
