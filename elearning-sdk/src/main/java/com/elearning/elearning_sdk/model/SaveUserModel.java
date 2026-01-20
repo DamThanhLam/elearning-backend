@@ -12,6 +12,7 @@ import java.util.List;
 public class SaveUserModel {
     private String displayName;
     private String email;
+    private boolean emailVerified;
     private String phone;
     private List<UserRole> roles;
     private String password;

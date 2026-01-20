@@ -21,12 +21,13 @@ public class RequestToModel {
         return SaveUserModel.builder()
             .displayName(request.getDisplayName())
             .email(request.getEmail())
+            .emailVerified(false)
             .phone(request.getPhone())
             .roles(Collections.singletonList(
                 UserRole.valueOf(request.getRole())
             ))
             .password(savePassword)
-            .status(UserStatus.NOT_VERIFIED)
+            .status(UserStatus.LOCKED)
             .build();
     }
 

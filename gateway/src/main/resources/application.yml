@@ -5,12 +5,6 @@ spring:
         webflux:
           metrics:
             enabled: true
-          default-filters:
-            - name: RequestRateLimiter
-              args:
-                redis-rate-limiter.replenishRate: 10
-                redis-rate-limiter.burstCapacity: 20
-                redis-rate-limiter.requestedTokens: 1
           routes:
             - id: auth_route
               uri: lb://auth-service
@@ -46,6 +40,23 @@ spring:
                 - Path=/error,/css/{segment},/js/{segment},/fonts/{segment},/images/{segment},/ui/{segment}
               filters:
                 - RewritePath=/ui/?(?<segment>.*), /$\{segment}
+          globalcors:
+            add-to-simple-url-handler-mapping: true
+            corsConfigurations:
+              '[/**]':
+                allowedOrigins:
+                  - "http://localhost:3000"
+                allowedMethods:
+                  - GET
+                  - POST
+                  - PUT
+                  - DELETE
+                  - OPTIONS
+                allowedHeaders:
+                  - "*"
+                allowCredentials: true
+          httpclient:
+            response-timeout: 5s
 resilience4j:
   circuitbreaker:
     configs:
@@ -73,3 +84,6 @@ management:
     web:
       exposure:
         include: health,info,gateway,metrics,prometheus
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG

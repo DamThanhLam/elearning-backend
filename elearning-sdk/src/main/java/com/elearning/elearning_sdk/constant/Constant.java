@@ -26,4 +26,6 @@ public class Constant {
 
     public static final boolean STUDENT_NOTIFICATION_SETTING_PUSH_FEEDBACK_DEFAULT = false;
     public static final boolean STUDENT_NOTIFICATION_SETTING_PUSH_NEW_SUBMISSION_DEFAULT =false;
+
+    public static final String HEADER_NAME_AUTHENTICATED_USER_ID = "authenticatedUserId";
 }

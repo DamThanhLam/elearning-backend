@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="JavaScriptLibraryMappings">
+    <excludedPredefinedLibrary name="elearning-app/theme/src/main/resources/view/node_modules" />
+    <excludedPredefinedLibrary name="elearning-app/theme/target/classes/view/node_modules" />
+  </component>
+</project>

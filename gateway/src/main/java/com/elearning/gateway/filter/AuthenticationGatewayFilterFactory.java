@@ -10,12 +10,12 @@ import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 
 @Component
-public class AuthenticationPredicateFactory extends AbstractGatewayFilterFactory<AuthenticationPredicateFactory.Config> {
+public class AuthenticationGatewayFilterFactory extends AbstractGatewayFilterFactory<AuthenticationGatewayFilterFactory.Config> {
 
     @Autowired
     private JwtTokenProvider tokenProvider;
 
-    public AuthenticationPredicateFactory() {
+    public AuthenticationGatewayFilterFactory() {
         super(Config.class);
     }
 

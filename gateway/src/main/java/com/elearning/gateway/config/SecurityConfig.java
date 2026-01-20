@@ -1,5 +1,6 @@
 package com.elearning.gateway.config;
 
+import com.elearning.gateway.filter.EmailVerifiedAfterAuthenticationFilter;
 import com.auth.idp.filter.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,7 +17,8 @@ public class SecurityConfig {
     @Order(2)
     public SecurityWebFilterChain filterChain(
         ServerHttpSecurity http,
-        JwtAuthenticationFilter jwtAuthenticationFilter
+        JwtAuthenticationFilter jwtAuthenticationFilter,
+        EmailVerifiedAfterAuthenticationFilter emailVerifiedAfterAuthenticationFilter
     ) {
         SubjectX500PrincipalExtractor principalExtractor =
             new SubjectX500PrincipalExtractor();
@@ -31,7 +33,14 @@ public class SecurityConfig {
             .authorizeExchange((authorize) -> authorize
                 .anyExchange().permitAll()
             )
-            .addFilterAt(jwtAuthenticationFilter, SecurityWebFiltersOrder.AUTHENTICATION);
+            .addFilterAt(
+                jwtAuthenticationFilter,
+                SecurityWebFiltersOrder.AUTHENTICATION
+            )
+            .addFilterAfter(
+                emailVerifiedAfterAuthenticationFilter,
+                SecurityWebFiltersOrder.AUTHENTICATION
+            );
         return http.build();
     }
 }

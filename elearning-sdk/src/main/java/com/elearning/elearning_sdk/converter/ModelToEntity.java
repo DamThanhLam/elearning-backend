@@ -69,6 +69,7 @@ public class ModelToEntity {
     ) {
         entity.setDisplayName(model.getDisplayName());
         entity.setEmail(model.getEmail());
+        entity.setEmailVerified(model.isEmailVerified());
         entity.setPhone(model.getPhone());
         entity.setPassword(model.getPassword());
         entity.setRoles(model.getRoles());
