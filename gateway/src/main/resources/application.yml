@@ -18,28 +18,12 @@ spring:
             - id: user_route_not_authentication
               uri: lb://user-service
               predicates:
-                - Path=/api/v1/users/sign-up
+                - Path=/api/v1/users/sign-up,/api/v1/users/forgot-password/send-otp,/api/v1/users/forgot-password/otp/verify
               filters:
                 - name: CircuitBreaker
                   args:
                     name: userCB
                     fallbackUri: forward:/fallback/circuit-breaker/users
-            - id: user_route
-              uri: lb://user-service
-              predicates:
-                - Path=/api/v1/users/{segment}
-              filters:
-                - name: CircuitBreaker
-                  args:
-                    name: userCB
-                    fallbackUri: forward:/fallback/circuit-breaker/users
-                - name: Authentication
-            - id: ui_service
-              uri: lb://ui-service
-              predicates:
-                - Path=/error,/css/{segment},/js/{segment},/fonts/{segment},/images/{segment},/ui/{segment}
-              filters:
-                - RewritePath=/ui/?(?<segment>.*), /$\{segment}
           globalcors:
             add-to-simple-url-handler-mapping: true
             corsConfigurations:
@@ -56,7 +40,7 @@ spring:
                   - "*"
                 allowCredentials: true
           httpclient:
-            response-timeout: 5s
+            response-timeout: 15s
 resilience4j:
   circuitbreaker:
     configs:
@@ -87,3 +71,4 @@ management:
 logging:
   level:
     org.springframework.cloud.gateway: DEBUG
+    reactor.netty.http.client: DEBUG

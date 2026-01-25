@@ -2,6 +2,8 @@ package com.elearning.elearning_sdk.controller.service;
 
 import com.elearning.elearning_sdk.service.UserService;
 import org.bson.types.ObjectId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -11,6 +13,8 @@ import reactor.core.scheduler.Schedulers;
 
 @Service
 public class EmailService {
+
+    private final Logger log = LoggerFactory.getLogger(EmailService.class);
 
     @Value("${spring.mail.username}")
     private String mailFrom;
@@ -32,14 +36,18 @@ public class EmailService {
         String content
     ) {
         return Mono
-            .fromRunnable(() -> {
+            .fromCallable(() -> {
                 SimpleMailMessage message = new SimpleMailMessage();
                 message.setFrom(mailFrom);
                 message.setTo(toEmailUser);
                 message.setSubject(subject);
                 message.setText(content);
+                log.info("DOING sendMail(...)");
                 mailSender.send(message);
+                log.info("END sendMail(...)");
+                return true;
             })
+            .doOnCancel(() -> log.info("SMTP SEND CANCEL"))
             .subscribeOn(Schedulers.boundedElastic())
             .then();
     }

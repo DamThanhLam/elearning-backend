@@ -52,6 +52,6 @@ public class TeacherSettingController {
                     )
                 )
             )
-            .then(Mono.just(ResponseEntity.noContent().build()));
+            .thenReturn(ResponseEntity.noContent().build());
     }
 }

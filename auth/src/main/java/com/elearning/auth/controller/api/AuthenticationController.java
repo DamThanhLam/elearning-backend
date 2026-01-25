@@ -49,6 +49,8 @@ public class AuthenticationController {
                 );
                 return ResponseEntity.ok().build();
             })
-            .onErrorResume(e -> Mono.just(ResponseEntity.badRequest().build()));
+            .onErrorResume(e ->
+                Mono.just(ResponseEntity.badRequest().body("Login failed. Please try again."))
+            );
     }
 }

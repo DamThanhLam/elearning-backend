@@ -9,6 +9,7 @@ import com.elearning.elearning_sdk.model.SaveUserModel;
 import com.elearning.elearning_sdk.model.UserInformationModel;
 import com.elearning.elearning_sdk.model.UserModel;
 import com.elearning.elearning_sdk.repository.UserRepository;
+import com.elearning.elearning_sdk.util.ClockProxy;
 import lombok.AllArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final ModelToEntity modelToEntity;
     private final EntityToModel entityToModel;
+    private final ClockProxy clockProxy;
 
     public Mono<ObjectId> addUser(SaveUserModel model) {
         User entity = modelToEntity.toEntity(model);
@@ -84,10 +86,27 @@ public class UserService {
             .map(User::getId);
     }
 
-    public Mono<Void> updatePassword(ObjectId id, String newPassword) {
+    public Mono<Void> updatePasswordById(
+        ObjectId id,
+        String newPassword
+    ) {
         return getUserByIdOrThrow(id)
             .flatMap(entity -> {
                 entity.setPassword(newPassword);
+                entity.setUpdatedAt(clockProxy.nowDateTime());
+                return userRepository.save(entity);
+            })
+            .then();
+    }
+
+    public Mono<Void> updatePasswordByEmail(
+        String email,
+        String newPassword
+    ) {
+        return getUserByEmailOrThrow(email)
+            .flatMap(entity -> {
+                entity.setPassword(newPassword);
+                entity.setUpdatedAt(clockProxy.nowDateTime());
                 return userRepository.save(entity);
             })
             .then();

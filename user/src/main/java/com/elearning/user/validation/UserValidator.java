@@ -1,15 +1,15 @@
 package com.elearning.user.validation;
 
 import com.elearning.elearning_sdk.service.UserService;
-import com.elearning.user.request.ChangePasswordRequest;
-import com.elearning.user.request.SaveUserInformationRequest;
-import com.elearning.user.request.SaveUserRequest;
+import com.elearning.user.request.*;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.apache.http.util.TextUtils.isBlank;
 
 @Component
 @AllArgsConstructor
@@ -61,6 +61,27 @@ public class UserValidator {
     }
 
     public Mono<Map<String, String>> validate(ChangePasswordRequest request) {
+        return Mono.empty();
+    }
+
+    public Mono<Map<String, String>> validate(
+        VerifyForgotPasswordRequest request
+    ) {
+        Map<String, String> errors = new HashMap<>();
+        if (isBlank(request.getEmail())) {
+            errors.put("email", "Email is required");
+        }
+        if (isBlank(request.getOtp())) {
+            errors.put("otp", "OTP is required");
+        }
+        String password = request.getNewPassword();
+        if (password.isEmpty()) {
+            errors.put("password", "Password is required");
+        }
+        return Mono.just(errors);
+    }
+
+    public Mono<Map<String, String>> validate(ForgotPasswordRequest request) {
         return Mono.empty();
     }
 }

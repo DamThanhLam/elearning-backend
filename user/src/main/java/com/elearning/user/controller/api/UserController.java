@@ -1,18 +1,19 @@
 package com.elearning.user.controller.api;
 
 import com.elearning.elearning_sdk.annotation.AuthenticatedUserId;
-import com.elearning.elearning_sdk.controller.service.EmailService;
 import com.elearning.elearning_sdk.controller.service.OneTimeTokenService;
+import com.elearning.elearning_sdk.event.SendEmailEvent;
 import com.elearning.elearning_sdk.model.GenerateOneTimeTokenModel;
+import com.elearning.elearning_sdk.model.OneTimeTokenAuthenticationTokenModel;
 import com.elearning.elearning_sdk.service.UserService;
 import com.elearning.user.converter.RequestToModel;
-import com.elearning.user.request.ChangePasswordRequest;
-import com.elearning.user.request.ForgotPasswordRequest;
-import com.elearning.user.request.SaveUserInformationRequest;
-import com.elearning.user.request.SaveUserRequest;
+import com.elearning.user.request.*;
 import com.elearning.user.validation.UserValidator;
 import lombok.AllArgsConstructor;
 import org.bson.types.ObjectId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -33,7 +34,7 @@ public class UserController {
     private final UserService userService;
     private final RequestToModel requestToModel;
     private final PasswordEncoder passwordEncoder;
-    private final EmailService emailService;
+    private final ApplicationEventPublisher eventPublisher;
 
     @PostMapping("/sign-up")
     public Mono<ResponseEntity<Object>> signUpPost(
@@ -53,7 +54,7 @@ public class UserController {
         );
     }
 
-    @PutMapping("/users/profiles")
+    @PutMapping("/profiles")
     public Mono<ResponseEntity<Object>> userProfilesPut(
         @AuthenticatedUserId Mono<ObjectId> authenticatedUserId,
         @RequestBody Mono<SaveUserInformationRequest> request
@@ -71,12 +72,12 @@ public class UserController {
                                         req
                                     )
                             ))
-                            .then(Mono.just(ResponseEntity.ok().build()))
+                            .thenReturn(ResponseEntity.ok().build())
                 ))
         );
     }
 
-    @PostMapping("/users/change-password")
+    @PostMapping("/change-password")
     public Mono<ResponseEntity<Object>> changePassword(
         @AuthenticatedUserId Mono<ObjectId> authenticatedUserId,
         @RequestBody Mono<ChangePasswordRequest> request
@@ -89,39 +90,74 @@ public class UserController {
                         String passwordEncode = passwordEncoder.encode(req.getNewPassword());
                         return authenticatedUserId
                             .flatMap(userId ->
-                                userService.updatePassword(
+                                userService.updatePasswordById(
                                     userId,
                                     passwordEncode
                                 ))
-                            .then(Mono.just(ResponseEntity.ok().build()));
+                            .thenReturn(ResponseEntity.ok().build());
                     })
                 )
         );
     }
 
-    @PostMapping("/users/forgot-password/send-otp")
-    public Mono<ResponseEntity<Object>> forgotPassword(
+    @PostMapping("/forgot-password/send-otp")
+    public Mono<ResponseEntity<Object>> forgotPasswordSendOtp(
         @RequestBody Mono<ForgotPasswordRequest> request
     ) {
         return request
             .flatMap(rq ->
-                oneTimeTokenService.generate(
-                    new GenerateOneTimeTokenModel(
-                        rq.getEmail()
-                    )
-                )
+                userValidator.validate(rq)
+                    .map(e -> ResponseEntity.badRequest().body((Object)e))
+                    .switchIfEmpty(Mono.defer(() ->
+                        oneTimeTokenService.generate(
+                            new GenerateOneTimeTokenModel(
+                                rq.getEmail()
+                            )
+                        ).doOnNext(ott ->
+                            eventPublisher.publishEvent(
+                                SendEmailEvent.builder()
+                                    .toEmailUser( ott.getUsername())
+                                    .subject(OTP_SUBJECT)
+                                    .content(OTP_VERIFY_TEMPLATE.replace("<otp>", ott.getTokenValue()))
+                                    .build()
+                            )
+                        ).thenReturn(ResponseEntity.ok().build())
+                    ))
+            );
+    }
+
+    @PostMapping("/forgot-password/otp/verify")
+    public Mono<ResponseEntity<Object>> forgotPasswordOtpVerify(
+        @RequestBody Mono<VerifyForgotPasswordRequest> request
+    ) {
+        return request
+            .flatMap( rq ->
+                userValidator.validate(rq)
+                    .filter(errors -> !errors.isEmpty())
+                    .map(errors -> ResponseEntity.badRequest().body((Object)errors))
+                    .switchIfEmpty(Mono.defer(() ->
+                        oneTimeTokenService
+                            .consume(
+                                new OneTimeTokenAuthenticationTokenModel(
+                                    rq.getEmail(),
+                                    rq.getOtp()
+                                )
+                            )
+                            .flatMap(token ->
+                                userService
+                                    .updatePasswordByEmail(
+                                        token.getUsername(),
+                                        passwordEncoder.encode(
+                                            rq.getNewPassword()
+                                        )
+                                    )
+                                    .thenReturn(ResponseEntity.ok().build())
+                            )
+                            .switchIfEmpty(
+                                Mono.defer(() ->Mono.just(ResponseEntity.badRequest().build()))
+                            )
+                    ))
             )
-            .flatMap(ott ->
-                emailService
-                    .sendMail(
-                        ott.getUsername(),
-                        OTP_SUBJECT,
-                        OTP_VERIFY_TEMPLATE.replace("<otp>", ott.getTokenValue())
-                    )
-                    .then(Mono.just(ott))
-            )
-            .then(Mono.defer(() ->
-                Mono.just(ResponseEntity.noContent().build())
-            ));
+            .onErrorResume(e -> Mono.just(ResponseEntity.badRequest().build()));
     }
 }

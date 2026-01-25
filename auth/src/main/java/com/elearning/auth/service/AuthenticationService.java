@@ -19,12 +19,9 @@ public class AuthenticationService {
         String password
     ) {
         return userRepository.findByEmail(email)
-            .filter(user -> {
-                if (passwordEncoder.matches(password, user.getPassword())) {
-                    return true;
-                }
-                return false;
-            })
+            .filter(user ->
+                passwordEncoder.matches(password, user.getPassword())
+            )
             .switchIfEmpty(Mono.error(new RuntimeException("Invalid email or password")))
             .map(CustomUserDetails::new);
     }

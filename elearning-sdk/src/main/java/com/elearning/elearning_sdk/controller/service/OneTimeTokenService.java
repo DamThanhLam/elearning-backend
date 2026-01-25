@@ -27,9 +27,7 @@ public class OneTimeTokenService {
         Instant expiresAt = this.clock.instant().plus(model.getExpiresIn());
         SaveRedisModel ott = new DefaultOneTimeToken(otp, model.getUsername(), expiresAt);
         return redisService.save(otp, ott)
-            .then(Mono.defer(() -> {
-                return Mono.just((OneTimeToken)ott);
-            }));
+            .thenReturn((OneTimeToken)ott);
     }
 
     public Mono<OneTimeToken> consume(OneTimeTokenAuthenticationTokenModel model) {

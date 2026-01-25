@@ -1,19 +1,30 @@
 package com.elearning.elearning_sdk.entity;
 
 import com.elearning.elearning_sdk.model.SaveRedisModel;
-import lombok.AllArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.time.Instant;
 
-@AllArgsConstructor
 public class DefaultOneTimeToken extends SaveRedisModel implements OneTimeToken{
 
-    private final String token;
+    private final String tokenValue;
     private final String username;
-    private final Instant expireAt;
+    private final Instant expiresAt;
+
+    @JsonCreator
+    public DefaultOneTimeToken(
+        @JsonProperty("tokenValue") String tokenValue,
+        @JsonProperty("username") String username,
+        @JsonProperty("expiresAt") Instant expiresAt
+    ) {
+        this.tokenValue = tokenValue;
+        this.username = username;
+        this.expiresAt = expiresAt;
+    }
 
     public String getTokenValue() {
-        return this.token;
+        return this.tokenValue;
     }
 
     public String getUsername() {
@@ -21,6 +32,6 @@ public class DefaultOneTimeToken extends SaveRedisModel implements OneTimeToken{
     }
 
     public Instant getExpiresAt() {
-        return this.expireAt;
+        return this.expiresAt;
     }
 }
