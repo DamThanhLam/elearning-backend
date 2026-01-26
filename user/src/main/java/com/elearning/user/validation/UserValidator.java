@@ -78,7 +78,7 @@ public class UserValidator {
         if (password.isEmpty()) {
             errors.put("password", "Password is required");
         }
-        return Mono.just(errors);
+        return Mono.empty();
     }
 
     public Mono<Map<String, String>> validate(ForgotPasswordRequest request) {

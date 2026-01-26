@@ -2,10 +2,11 @@ package com.auth.idp.converter;
 
 import com.auth.idp.entity.UserSession;
 import com.auth.idp.model.UserSessionModel;
+import com.elearning.elearning_sdk.converter.EntityToModel;
 import org.springframework.stereotype.Component;
 
 @Component("IdpEntityToModel")
-public class EntityToModel {
+public class AuthEntityToModel extends EntityToModel {
 
     public UserSessionModel toModel(UserSession userSession) {
         if (userSession == null) {

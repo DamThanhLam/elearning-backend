@@ -1,6 +1,7 @@
 package com.elearning.auth.service;
 
-import com.auth.idp.entity.CustomUserDetails;
+import com.auth.idp.converter.AuthEntityToModel;
+import com.elearning.elearning_sdk.model.UserInformationModel;
 import com.elearning.elearning_sdk.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -13,8 +14,9 @@ public class AuthenticationService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final AuthEntityToModel authEntityToModel;
 
-    public Mono<CustomUserDetails> authenticate(
+    public Mono<UserInformationModel> authenticate(
         String email,
         String password
     ) {
@@ -22,7 +24,6 @@ public class AuthenticationService {
             .filter(user ->
                 passwordEncoder.matches(password, user.getPassword())
             )
-            .switchIfEmpty(Mono.error(new RuntimeException("Invalid email or password")))
-            .map(CustomUserDetails::new);
+            .map(authEntityToModel::toUserInformationModel);
     }
 }

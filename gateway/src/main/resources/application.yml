@@ -24,6 +24,16 @@ spring:
                   args:
                     name: userCB
                     fallbackUri: forward:/fallback/circuit-breaker/users
+            - id: user_route
+              uri: lb://user-service
+              predicates:
+                - Path=/api/v1/users/**
+              filters:
+                - name: CircuitBreaker
+                  args:
+                    name: userCB
+                    fallbackUri: forward:/fallback/circuit-breaker/users
+                - name: Authentication
           globalcors:
             add-to-simple-url-handler-mapping: true
             corsConfigurations:

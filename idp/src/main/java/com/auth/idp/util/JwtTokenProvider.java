@@ -1,21 +1,23 @@
 package com.auth.idp.util;
 
-import com.auth.idp.entity.CustomUserDetails;
 import com.auth.idp.entity.UserSessionType;
 import com.auth.idp.model.UserSessionModel;
 import com.auth.idp.service.UserSessionService;
-import io.jsonwebtoken.*;
+import com.elearning.elearning_sdk.model.UserInformationModel;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 import javax.crypto.SecretKey;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -36,19 +38,19 @@ public class JwtTokenProvider {
 
     public Mono<String> generateToken(
         ServerWebExchange exchange,
-        CustomUserDetails userDetails
+        UserInformationModel userInformationModel
     ) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + JWT_EXPIRATION);
         String jwtToken = Jwts.builder()
-            .subject(userDetails.getUser().getEmail())
+            .subject(userInformationModel.getEmail())
             .issuedAt(now)
             .expiration(expiryDate)
-            .signWith(SignatureAlgorithm.HS512, JWT_SECRET)
+            .signWith(getSigningKey())
             .compact();
         UserSessionModel userSessionModel = buildUserSessionModel(
             exchange,
-            userDetails,
+            userInformationModel,
             jwtToken,
             toLocalDateTime(now),
             toLocalDateTime(expiryDate)
@@ -58,7 +60,7 @@ public class JwtTokenProvider {
     }
 
     private SecretKey getSigningKey() {
-        byte[] keyBytes = JWT_SECRET.getBytes(StandardCharsets.UTF_8);
+        byte[] keyBytes = Decoders.BASE64.decode(JWT_SECRET);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
@@ -83,21 +85,16 @@ public class JwtTokenProvider {
                     authToken
                 );
             }
-        } catch (MalformedJwtException ex) {
-            log.error("Invalid JWT token");
-        } catch (ExpiredJwtException ex) {
-            log.error("Expired JWT token");
-        } catch (UnsupportedJwtException ex) {
-            log.error("Unsupported JWT token");
-        } catch (IllegalArgumentException ex) {
-            log.error("JWT claims string is empty.");
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return Mono.error(e);
         }
-        return Mono.empty();
+        return Mono.error(new BadCredentialsException("JWT token is invalid"));
     }
 
     private UserSessionModel buildUserSessionModel(
         ServerWebExchange exchange,
-        CustomUserDetails userDetails,
+        UserInformationModel userInformationModel,
         String jwtToken,
         LocalDateTime issuedAt,
         LocalDateTime expiredAt
@@ -112,7 +109,7 @@ public class JwtTokenProvider {
         }
         LocalDateTime now = LocalDateTime.now();
         return UserSessionModel.builder()
-            .userId(userDetails.getUser().getId())
+            .userId(userInformationModel.getId())
             .token(jwtToken)
             .ipAddress(ipAddress)
             .userAgent(userAgent)

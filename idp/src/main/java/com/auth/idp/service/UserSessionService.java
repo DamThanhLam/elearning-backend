@@ -1,6 +1,6 @@
 package com.auth.idp.service;
 
-import com.auth.idp.converter.EntityToModel;
+import com.auth.idp.converter.AuthEntityToModel;
 import com.auth.idp.converter.ModelToEntity;
 import com.auth.idp.entity.UserSession;
 import com.auth.idp.model.UserSessionModel;
@@ -15,16 +15,16 @@ import java.util.List;
 @Service
 public class UserSessionService {
 
-    private final EntityToModel entityToModel;
+    private final AuthEntityToModel authEntityToModel;
     private final ModelToEntity modelToEntity;
     private final UserSessionRepository userSessionRepository;
 
     public UserSessionService(
-        @Qualifier("IdpEntityToModel") EntityToModel entityToModel,
+        @Qualifier("IdpEntityToModel") AuthEntityToModel authEntityToModel,
         @Qualifier("IdpModelToEntity") ModelToEntity modelToEntity,
         UserSessionRepository userSessionRepository
     ) {
-        this.entityToModel = entityToModel;
+        this.authEntityToModel = authEntityToModel;
         this.modelToEntity = modelToEntity;
         this.userSessionRepository = userSessionRepository;
     }
@@ -37,7 +37,7 @@ public class UserSessionService {
 
     public Mono<UserSessionModel> getUserSessionByToken(String token) {
         return userSessionRepository.getUserSessionByToken(token)
-            .map(entityToModel::toModel);
+            .map(authEntityToModel::toModel);
     }
 
     public Mono<List<UserSessionModel>> getUserSessionByUserIdAndActive(
@@ -48,7 +48,7 @@ public class UserSessionService {
             .getUserSessionsByUserIdAndActive(userId, active)
             .map(list ->
                 list.stream()
-                    .map(entityToModel::toModel)
+                    .map(authEntityToModel::toModel)
                     .toList()
             );
     }

@@ -9,7 +9,8 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 
 @Repository
-public interface UserSessionRepository extends ReactiveMongoRepository<UserSession, Long> {
+public interface UserSessionRepository extends ReactiveMongoRepository<UserSession, ObjectId> {
+
     Mono<UserSession> getUserSessionByToken(String token);
 
     Mono<List<UserSession>> getUserSessionsByUserIdAndActive(

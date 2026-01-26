@@ -4,13 +4,11 @@ package com.elearning.elearning_sdk.converter;
 import com.elearning.elearning_sdk.entity.*;
 import com.elearning.elearning_sdk.model.*;
 import com.elearning.elearning_sdk.util.ClockProxy;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
 @Component("EntityToModel")
-@AllArgsConstructor
 @Primary
 public class EntityToModel {
 

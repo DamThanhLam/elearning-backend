@@ -10,9 +10,8 @@ import com.elearning.user.converter.RequestToModel;
 import com.elearning.user.request.*;
 import com.elearning.user.validation.UserValidator;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,6 +23,7 @@ import java.util.Objects;
 import static com.elearning.user.constant.Constant.OTP_SUBJECT;
 import static com.elearning.user.constant.Constant.OTP_VERIFY_TEMPLATE;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/v1/users")
 @AllArgsConstructor
@@ -159,5 +159,13 @@ public class UserController {
                     ))
             )
             .onErrorResume(e -> Mono.just(ResponseEntity.badRequest().build()));
+    }
+
+    @GetMapping("/information")
+    public Mono<ResponseEntity<Object>> userInformation(
+        @AuthenticatedUserId ObjectId userId
+    ) {
+        return userService.getUserInformationById(userId)
+            .map(ResponseEntity::ok);
     }
 }
