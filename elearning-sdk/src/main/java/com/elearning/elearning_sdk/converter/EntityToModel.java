@@ -125,4 +125,19 @@ public class EntityToModel {
             .updatedAt(entity.getUpdatedAt())
             .build();
     }
+
+    public EClassModel toModel(EClass entity) {
+        if (entity == null) {
+            return null;
+        }
+        return EClassModel.builder()
+            .id(entity.getId())
+            .teacherId(entity.getTeacherId())
+            .displayName(entity.getDisplayName())
+            .shortDescription(entity.getShortDescription())
+            .status(entity.getStatus())
+            .createdAt(entity.getCreatedAt())
+            .updatedAt(entity.getUpdatedAt())
+            .build();
+    }
 }

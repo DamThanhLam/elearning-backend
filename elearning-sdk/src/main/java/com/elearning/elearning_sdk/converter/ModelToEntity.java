@@ -51,6 +51,24 @@ public class ModelToEntity {
         return entity;
     }
 
+
+    public EClass toEntity(SaveEClassModel model) {
+        EClass entity = new EClass();
+        mergeToEntity(model, entity);
+        entity.setCreatedAt(entity.getUpdatedAt());
+        return entity;
+    }
+
+    public void mergeToEntity(
+        SaveEClassModel model,
+        EClass entity
+    ) {
+        entity.setStatus(model.getStatus());
+        entity.setDisplayName(model.getDisplayName());
+        entity.setShortDescription(model.getShortDescription());
+        entity.setUpdatedAt(clock.nowDateTime());
+    }
+
     private void mergeToEntity(
         SaveSettingModel model,
         Setting entity
