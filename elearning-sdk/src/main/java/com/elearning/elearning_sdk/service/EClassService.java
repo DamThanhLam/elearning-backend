@@ -1,6 +1,5 @@
 package com.elearning.elearning_sdk.service;
 
-import com.elearning.elearning_sdk.annotation.AuthenticatedUserId;
 import com.elearning.elearning_sdk.converter.EntityToModel;
 import com.elearning.elearning_sdk.converter.ModelToEntity;
 import com.elearning.elearning_sdk.entity.EClass;
@@ -25,7 +24,7 @@ public class EClassService {
     private final EntityToModel entityToModel;
 
     public Mono<ObjectId> addEClass(
-        @AuthenticatedUserId ObjectId teacherId,
+        ObjectId teacherId,
         SaveEClassModel model
     ) {
         EClass entity = modelToEntity.toEntity(model);

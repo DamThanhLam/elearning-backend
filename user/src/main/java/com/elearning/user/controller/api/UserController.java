@@ -56,7 +56,7 @@ public class UserController {
 
     @PutMapping("/profiles")
     public Mono<ResponseEntity<Object>> userProfilesPut(
-        @AuthenticatedUserId Mono<ObjectId> authenticatedUserId,
+        @AuthenticatedUserId ObjectId authenticatedUserId,
         @RequestBody Mono<SaveUserInformationRequest> request
     ) {
         return request.flatMap(req ->
@@ -64,22 +64,20 @@ public class UserController {
                 .map(errors -> ResponseEntity.ok().body((Object) errors))
                 .switchIfEmpty(
                     Mono.defer(() ->
-                        authenticatedUserId
-                            .flatMap(userId ->
-                                userService.updateUser(
-                                    userId,
-                                    requestToModel.toModel(
-                                        req
-                                    )
-                            ))
-                            .thenReturn(ResponseEntity.ok().build())
+                        userService.updateUser(
+                            authenticatedUserId,
+                            requestToModel.toModel(
+                                req
+                            )
+                        )
+                        .thenReturn(ResponseEntity.ok().build())
                 ))
         );
     }
 
     @PostMapping("/change-password")
     public Mono<ResponseEntity<Object>> changePassword(
-        @AuthenticatedUserId Mono<ObjectId> authenticatedUserId,
+        @AuthenticatedUserId ObjectId authenticatedUserId,
         @RequestBody Mono<ChangePasswordRequest> request
     ) {
         return request.flatMap(req ->
@@ -88,12 +86,11 @@ public class UserController {
                 .switchIfEmpty(
                     Mono.defer(() -> {
                         String passwordEncode = passwordEncoder.encode(req.getNewPassword());
-                        return authenticatedUserId
-                            .flatMap(userId ->
-                                userService.updatePasswordById(
-                                    userId,
-                                    passwordEncode
-                                ))
+                        return userService
+                            .updatePasswordById(
+                                authenticatedUserId,
+                                passwordEncode
+                            )
                             .thenReturn(ResponseEntity.ok().build());
                     })
                 )

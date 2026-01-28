@@ -25,31 +25,29 @@ public class TeacherSettingController {
 
     @PutMapping("/teachers/settings/notifications")
     public Mono<ResponseEntity<Object>> teacherSettingNotifications(
-        @AuthenticatedUserId Mono<ObjectId> authenticatedUserId,
+        @AuthenticatedUserId ObjectId authenticatedUserId,
         @RequestBody Mono<SaveTeacherNotificationSettingRequest> request
     ) {
         return request
             .flatMap(rq ->
-                authenticatedUserId.flatMap( userId ->
-                    userSettingService.saveNotificationSettings(
-                        userId,
-                        Map.ofEntries(
-                            Map.entry(
-                                TEACHER_NOTIFICATION_SETTING_EMAIL_NEW_SUBMISSION,
-                                rq.isNotificationEmailNewSubmission()
-                            ),
-                            Map.entry(
-                                TEACHER_NOTIFICATION_SETTING_EMAIL_GRADE_UPDATE,
-                                rq.isNotificationEmailGradeUpdate()
-                            ),
-                            Map.entry(
-                                TEACHER_NOTIFICATION_SETTING_PUSH_NEW_SUBMISSION,
-                                rq.isNotificationPushNewSubmission()
-                            ),
-                            Map.entry(
-                                TEACHER_NOTIFICATION_SETTING_PUSH_GRADE_UPDATE,
-                                rq.isNotificationPushGradeUpdate()
-                            )
+                userSettingService.saveNotificationSettings(
+                    authenticatedUserId,
+                    Map.ofEntries(
+                        Map.entry(
+                            TEACHER_NOTIFICATION_SETTING_EMAIL_NEW_SUBMISSION,
+                            rq.isNotificationEmailNewSubmission()
+                        ),
+                        Map.entry(
+                            TEACHER_NOTIFICATION_SETTING_EMAIL_GRADE_UPDATE,
+                            rq.isNotificationEmailGradeUpdate()
+                        ),
+                        Map.entry(
+                            TEACHER_NOTIFICATION_SETTING_PUSH_NEW_SUBMISSION,
+                            rq.isNotificationPushNewSubmission()
+                        ),
+                        Map.entry(
+                            TEACHER_NOTIFICATION_SETTING_PUSH_GRADE_UPDATE,
+                            rq.isNotificationPushGradeUpdate()
                         )
                     )
                 )
