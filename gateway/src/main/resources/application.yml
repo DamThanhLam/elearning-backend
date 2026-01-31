@@ -18,22 +18,45 @@ spring:
             - id: user_route_not_authentication
               uri: lb://user-service
               predicates:
-                - Path=/api/v1/users/sign-up,/api/v1/users/forgot-password/send-otp,/api/v1/users/forgot-password/otp/verify
+                - Path=/users/api/v1/users/sign-up,/users/api/v1/users/forgot-password/send-otp,/users/api/v1/users/forgot-password/otp/verify
               filters:
                 - name: CircuitBreaker
                   args:
                     name: userCB
                     fallbackUri: forward:/fallback/circuit-breaker/users
+                - name: RewritePath
+                  args:
+                    regexp: /users/?(?<segment>.*)
+                    replacement: /${segment}
             - id: user_route
               uri: lb://user-service
               predicates:
-                - Path=/api/v1/users/**
+                - Path=/users/api/v1/**
               filters:
                 - name: CircuitBreaker
                   args:
                     name: userCB
                     fallbackUri: forward:/fallback/circuit-breaker/users
                 - name: Authentication
+                - name: RewritePath
+                  args:
+                    regexp: /users/?(?<segment>.*)
+                    replacement: /${segment}
+            - id: eclass_route
+              uri: lb://eclass-service
+              predicates:
+                - Path=/eclasses/api/v1/**
+              filters:
+                - name: CircuitBreaker
+                  args:
+                    name: userCB
+                    fallbackUri: forward:/fallback/circuit-breaker/eclasses
+                - name: Authentication
+                - name: RewritePath
+                  args:
+                    regexp: /eclasses/?(?<segment>.*)
+                    replacement: /$\{segment}
+
           globalcors:
             add-to-simple-url-handler-mapping: true
             corsConfigurations:

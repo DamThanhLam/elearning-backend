@@ -1,0 +1,6 @@
+spring:
+  data:
+    mongodb:
+      auto-index-creation: true
+  mongodb:
+    uri: mongodb+srv://ldamthanh62:${PASSWORD_MONGODB}@cluster0.tg8mcdl.mongodb.net/elearning?appName=Cluster0

@@ -29,6 +29,7 @@ public class EClass {
     @Field(name = "display_name")
     private String displayName;
 
+    @TextIndexed
     @Field(name = "short_description")
     private String shortDescription;
 

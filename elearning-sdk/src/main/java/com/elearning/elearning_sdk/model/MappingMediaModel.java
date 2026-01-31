@@ -13,7 +13,6 @@ public class MappingMediaModel {
     private ObjectId id;
     private ObjectId mediaId;
     private ObjectId entityId;
-    private String secondaryKey;
     private MappingMediaType type;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

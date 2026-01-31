@@ -14,6 +14,10 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+
 @Service
 @AllArgsConstructor
 public class MappingMediaService {
@@ -24,12 +28,10 @@ public class MappingMediaService {
 
     public Mono<ObjectId> addMappingMedia(
         ObjectId classId,
-        String secondaryKey,
         SaveMappingMediaModel model
     ) {
         MappingMedia entity = modelToEntity.toEntity(model);
         entity.setId(classId);
-        entity.setSecondaryKey(secondaryKey);
         return mappingMediaRepository.save(entity)
             .map(MappingMedia::getId);
     }
@@ -49,6 +51,35 @@ public class MappingMediaService {
 
     public Flux<ObjectId> getMediaIdByEntityId(ObjectId entityId) {
         return mappingMediaRepository.getMediaIdByEntityId(entityId);
+    }
+
+    public Mono<ObjectId> getFirstMediaIdByEntityIdAndType(
+        ObjectId entityId,
+        MappingMediaType type
+    ) {
+        return mappingMediaRepository.getFirstMediaIdByEntityIdAndType(
+            entityId,
+            type
+        );
+    }
+
+    public Flux<ObjectId> getMediaIdByEntityIdAndType(
+        ObjectId entityId,
+        MappingMediaType type
+    ) {
+        return mappingMediaRepository.getMediaIdByEntityIdAndType(
+            entityId,
+            type
+        );
+    }
+
+    public Mono<Map<ObjectId, MappingMediaModel>> getMediaMapByEntityIds(List<ObjectId> entityIds) {
+        return mappingMediaRepository.getMediaIdByEntityIdIn(entityIds)
+            .map(entityToModel::toModel)
+            .collectMap(
+                MappingMediaModel::getEntityId,
+                Function.identity()
+            );
     }
 
     public Mono<MappingMediaModel> getMappingMediaById(ObjectId id) {

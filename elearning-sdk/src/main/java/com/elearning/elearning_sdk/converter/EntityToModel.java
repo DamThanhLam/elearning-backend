@@ -74,7 +74,6 @@ public class EntityToModel {
             .entityId(entity.getEntityId())
             .mediaId(entity.getMediaId())
             .type(entity.getType())
-            .secondaryKey(entity.getSecondaryKey())
             .createdAt(entity.getCreatedAt())
             .updatedAt(entity.getUpdatedAt())
             .build();
@@ -119,7 +118,6 @@ public class EntityToModel {
         return MappingMediaModel.builder()
             .mediaId(entity.getMediaId())
             .entityId(entity.getEntityId())
-            .secondaryKey(entity.getSecondaryKey())
             .type(entity.getType())
             .createdAt(entity.getCreatedAt())
             .updatedAt(entity.getUpdatedAt())

@@ -2,11 +2,11 @@ package com.elearning.eclass;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.ComponentScan;
 
-@SpringBootApplication
-@ComponentScan({
-	"com.elearning.elearning_sdk"
+@SpringBootApplication(scanBasePackages = {
+	"com.elearning.elearning_sdk",
+	"com.pagination.mongodb",
+	"com.elearning.eclass",
 })
 public class EclassApplication {
 

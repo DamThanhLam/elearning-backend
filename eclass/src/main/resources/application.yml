@@ -1,0 +1,6 @@
+logging:
+  level:
+    org.springframework.web: DEBUG
+    org.springframework.security: DEBUG
+    reactor.netty: DEBUG
+    org.springframework.web.servlet: TRACE

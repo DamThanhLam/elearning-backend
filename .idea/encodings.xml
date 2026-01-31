@@ -6,8 +6,10 @@
     <file url="file://$PROJECT_DIR$/discovery/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/eclass/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/elearning-sdk/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/elearning-sdk/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/gateway/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/idp/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/mongodb/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/theme/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/user/src/main/java" charset="UTF-8" />
   </component>

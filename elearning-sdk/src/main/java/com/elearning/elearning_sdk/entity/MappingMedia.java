@@ -1,6 +1,5 @@
 package com.elearning.elearning_sdk.entity;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.bson.types.ObjectId;
@@ -32,9 +31,6 @@ public class MappingMedia {
 
     @Field(name = "entity_id")
     private ObjectId entityId;
-
-    @Field(name = "secondary_key")
-    private String secondaryKey;
 
     private MappingMediaType type;
 

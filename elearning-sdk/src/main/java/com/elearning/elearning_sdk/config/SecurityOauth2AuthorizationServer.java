@@ -1,4 +1,4 @@
-package com.auth.idp.config;
+package com.elearning.elearning_sdk.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
