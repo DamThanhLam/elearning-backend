@@ -28,7 +28,7 @@ public class EClassController {
     private final EClassControllerService eclassControllerService;
     private final EClassService eclassService;
 
-    @PostMapping("/eclasses")
+    @PostMapping("/teachers/me/eclasses")
     public Mono<ResponseEntity<Object>> eclassPost(
         @AuthenticatedUserId ObjectId userId,
         @RequestBody Mono<SaveEClassRequest> request
