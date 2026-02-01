@@ -2,8 +2,8 @@ package com.pagination.mongodb.utils;
 
 import com.pagination.mongodb.model.PaginationModel;
 import com.pagination.mongodb.pagination.DefaultPaginationFilter;
-import com.pagination.mongodb.pagination.Pageable;
 import com.pagination.mongodb.service.DefaultPaginationService;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 

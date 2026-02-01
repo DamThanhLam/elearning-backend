@@ -18,7 +18,7 @@ public class EClassPaginationFilter implements DefaultPaginationFilter {
     @Override
     public List<CriteriaDefinition> queryOperator() {
         List<CriteriaDefinition> criterias = new ArrayList<>();
-        if (key != null) {
+        if (!key.isEmpty()) {
             criterias.add(new TextCriteria().matching(key));
         }
         return criterias;

@@ -9,9 +9,9 @@ import com.elearning.eclass.validation.EClassValidator;
 import com.elearning.elearning_sdk.annotation.AuthenticatedUserId;
 import com.elearning.elearning_sdk.service.EClassService;
 import com.pagination.mongodb.model.PaginationModel;
-import com.pagination.mongodb.pagination.Pageable;
 import lombok.AllArgsConstructor;
 import org.bson.types.ObjectId;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
@@ -52,7 +52,7 @@ public class EClassController {
         @RequestParam(required = false) String nextPageToken,
         @RequestParam(required = false) String previousPageToken,
         @RequestParam(required = false) String displayName,
-        @PageableDefault(size = 15, sort = {"createdAt"}, direction = Sort.Direction.DESC) Pageable pageable
+        @PageableDefault(size = 15, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
     ) {
         return eclassControllerService
             .getEClassTeacherPagination(

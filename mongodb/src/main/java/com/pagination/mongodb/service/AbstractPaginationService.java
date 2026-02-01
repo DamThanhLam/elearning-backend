@@ -2,9 +2,9 @@ package com.pagination.mongodb.service;
 
 import com.pagination.mongodb.model.PaginationModel;
 import com.pagination.mongodb.pagination.DefaultPaginationFilter;
-import com.pagination.mongodb.pagination.Pageable;
 import com.pagination.mongodb.repository.DefaultPaginationRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import reactor.core.publisher.Mono;
 
 @AllArgsConstructor

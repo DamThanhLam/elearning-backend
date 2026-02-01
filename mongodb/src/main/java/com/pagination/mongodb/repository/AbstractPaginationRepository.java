@@ -2,11 +2,11 @@ package com.pagination.mongodb.repository;
 
 import com.pagination.mongodb.model.PaginationModel;
 import com.pagination.mongodb.pagination.DefaultPaginationFilter;
-import com.pagination.mongodb.pagination.Pageable;
 import com.pagination.mongodb.pagination.PaginationTokenCodec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -19,6 +19,8 @@ import reactor.core.publisher.Mono;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,8 +35,6 @@ public abstract class AbstractPaginationRepository<R, F extends DefaultPaginatio
     @Autowired
     private PaginationTokenCodec tokenCodec;
 
-    private Class<R> resultType;
-
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Override
@@ -43,7 +43,6 @@ public abstract class AbstractPaginationRepository<R, F extends DefaultPaginatio
         String nextPageToken,
         Pageable pageable
     ) {
-        Assert.notNull(nextPageToken, "nextPageToken must not be null");
         return doPagination(filter, nextPageToken, pageable, true);
     }
 
@@ -53,7 +52,6 @@ public abstract class AbstractPaginationRepository<R, F extends DefaultPaginatio
         String previousPageToken,
         Pageable pageable
     ) {
-        Assert.notNull(previousPageToken, "previousPageToken must not be null");
         return doPagination(filter, previousPageToken, pageable, false);
     }
 
@@ -63,9 +61,10 @@ public abstract class AbstractPaginationRepository<R, F extends DefaultPaginatio
         Pageable pageable,
         boolean isNextPage
     ) {
-        List<Sort.Order> orders = pageable.getSort().get().toList();
+        List<Sort.Order> orders = pageable.getSort() != null ?
+            pageable.getSort().get().toList() : new ArrayList<>();
         Query query = buildQuery(filter, pageToken, pageable, orders, isNextPage);
-        return template.find(query, resultType)
+        return template.find(query, getResultType())
             .collectList()
             .map(list -> buildPaginationModel(list, orders));
     }
@@ -77,6 +76,7 @@ public abstract class AbstractPaginationRepository<R, F extends DefaultPaginatio
         List<Sort.Order> orders,
         boolean isNextPage
     ) {
+        Assert.notNull(pageable, "pageable must not be null");
         Query query = new Query();
 
         for (CriteriaDefinition criteria : filter.queryOperator()) {
@@ -84,7 +84,8 @@ public abstract class AbstractPaginationRepository<R, F extends DefaultPaginatio
         }
         return query
             .addCriteria(generateCriteriaPageToken(pageToken, orders, isNextPage))
-            .limit(pageable.getSize())
+            .limit(pageable.getPageSize())
+            .skip(pageable.getOffset())
             .with(pageable.getSort().reverse());
     }
 
@@ -114,7 +115,7 @@ public abstract class AbstractPaginationRepository<R, F extends DefaultPaginatio
         for (Sort.Order order : orders) {
             String property = order.getProperty();
             try {
-                Method getter = resultType.getMethod(
+                Method getter = getResultType().getMethod(
                     "get" + StringUtils.capitalize(property)
                 );
                 keyToken.put(property, getter.invoke(result));
@@ -143,5 +144,12 @@ public abstract class AbstractPaginationRepository<R, F extends DefaultPaginatio
             }
         }
         return criteria;
+    }
+
+    private Class<R> getResultType() {
+        return (Class<R>)
+            ((ParameterizedType) getClass()
+                .getGenericSuperclass())
+                .getActualTypeArguments()[0];
     }
 }

@@ -2,7 +2,7 @@ package com.pagination.mongodb.repository;
 
 import com.pagination.mongodb.model.PaginationModel;
 import com.pagination.mongodb.pagination.DefaultPaginationFilter;
-import com.pagination.mongodb.pagination.Pageable;
+import org.springframework.data.domain.Pageable;
 import reactor.core.publisher.Mono;
 
 public interface DefaultPaginationRepository<R, F extends DefaultPaginationFilter> {

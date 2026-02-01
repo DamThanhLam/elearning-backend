@@ -5,9 +5,9 @@ import com.elearning.eclass.pagination.EClassPaginationFilter;
 import com.elearning.eclass.response.ECLassTeacherResponse;
 import com.elearning.eclass.service.EClassPaginationService;
 import com.pagination.mongodb.model.PaginationModel;
-import com.pagination.mongodb.pagination.Pageable;
 import com.pagination.mongodb.utils.PaginationExecutor;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
