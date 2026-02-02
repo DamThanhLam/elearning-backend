@@ -1,7 +1,7 @@
 package com.elearning.elearning_sdk.resolvers;
 
 import com.elearning.elearning_sdk.annotation.AuthenticatedUserId;
-import org.bson.types.ObjectId;
+
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.BindingContext;
@@ -25,7 +25,7 @@ public class AuthenticatedUserIdResolver implements HandlerMethodArgumentResolve
         ServerWebExchange exchange
     ) {
         return Mono.just(
-            new ObjectId(
+            new String(
                 Objects.requireNonNull(
                     exchange.getRequest()
                     .getHeaders()

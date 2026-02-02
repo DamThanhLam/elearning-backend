@@ -2,7 +2,7 @@ package com.elearning.elearning_sdk.entity;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.bson.types.ObjectId;
+
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -24,13 +24,13 @@ import java.time.LocalDateTime;
 })
 public class MappingMedia {
     @Id
-    private ObjectId id;
+    private String id;
 
     @Field(name = "media_id")
-    private ObjectId mediaId;
+    private String mediaId;
 
     @Field(name = "entity_id")
-    private ObjectId entityId;
+    private String entityId;
 
     private MappingMediaType type;
 

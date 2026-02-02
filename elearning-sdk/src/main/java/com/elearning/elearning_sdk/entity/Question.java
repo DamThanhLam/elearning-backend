@@ -2,7 +2,7 @@ package com.elearning.elearning_sdk.entity;
 
 import lombok.Builder;
 import lombok.Data;
-import org.bson.types.ObjectId;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -14,15 +14,15 @@ import java.util.List;
 @Document(collection = "questions")
 public class Question {
     @Id
-    private ObjectId id;
+    private String id;
 
     @Indexed
     @Field(name = "tag_ids")
-    private List<ObjectId> tagIds;
+    private List<String> tagIds;
 
     @Indexed
     @Field(name = "category_ids")
-    private List<ObjectId> categoryIds;
+    private List<String> categoryIds;
 
     private QuestionType type;
 

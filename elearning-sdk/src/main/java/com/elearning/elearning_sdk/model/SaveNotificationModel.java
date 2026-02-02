@@ -5,13 +5,13 @@ import com.elearning.elearning_sdk.entity.NotificationStatus;
 import com.elearning.elearning_sdk.entity.NotificationType;
 import lombok.Builder;
 import lombok.Getter;
-import org.bson.types.ObjectId;
+
 
 @Builder
 @Getter
 public class SaveNotificationModel {
-    private ObjectId fromId;
-    private ObjectId toUserId;
+    private String fromId;
+    private String toUserId;
     private String title;
     private String content;
     private String url;

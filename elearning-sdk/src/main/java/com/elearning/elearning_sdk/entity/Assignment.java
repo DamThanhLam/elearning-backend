@@ -3,7 +3,7 @@ package com.elearning.elearning_sdk.entity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import org.bson.types.ObjectId;
+
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -26,11 +26,11 @@ import java.time.LocalDateTime;
 })
 public class Assignment {
     @Id
-    private ObjectId id;
+    private String id;
 
     @Indexed
     @Field(name = "class_id")
-    private ObjectId classId;
+    private String classId;
 
     @Field(name = "display_name")
     private String displayName;

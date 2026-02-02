@@ -2,7 +2,7 @@ package com.elearning.elearning_sdk.entity;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.bson.types.ObjectId;
+
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -19,11 +19,11 @@ import java.time.LocalDateTime;
 public class EClass {
 
     @Id
-    private ObjectId id;
+    private String id;
 
     @Indexed
     @Field(name = "teacher_id")
-    private ObjectId teacherId;
+    private String teacherId;
 
     @TextIndexed
     @Field(name = "display_name")

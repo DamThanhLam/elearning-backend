@@ -1,7 +1,7 @@
 package com.elearning.elearning_sdk.controller.service;
 
 import com.elearning.elearning_sdk.service.UserService;
-import org.bson.types.ObjectId;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,8 +30,8 @@ public class EmailService {
         this.userService = userService;
     }
 
-    public Mono<Void> sendMail(
-        String toEmailUser,
+    public Mono<Void> sendToEmail(
+        String toUserEmail,
         String subject,
         String content
     ) {
@@ -39,7 +39,7 @@ public class EmailService {
             .fromCallable(() -> {
                 SimpleMailMessage message = new SimpleMailMessage();
                 message.setFrom(mailFrom);
-                message.setTo(toEmailUser);
+                message.setTo(toUserEmail);
                 message.setSubject(subject);
                 message.setText(content);
                 log.info("DOING sendMail(...)");
@@ -53,14 +53,14 @@ public class EmailService {
     }
 
     public Mono<Void> sendMail(
-        ObjectId toUserId,
+        String toUserId,
         String subject,
         String content
     ) {
         return userService
             .getEmailByUserId(toUserId)
                 .flatMap(email ->
-                    sendMail(email, subject, content)
+                    sendToEmail(email, subject, content)
                 )
             .then();
     }

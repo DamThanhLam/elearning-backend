@@ -1,7 +1,7 @@
 package com.auth.idp.entity;
 
 import lombok.Data;
-import org.bson.types.ObjectId;
+
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -15,10 +15,10 @@ import java.time.LocalDateTime;
 public class UserSession {
 
     @Id
-    private ObjectId id;
+    private String id;
 
     @Field(name = "user_id")
-    private ObjectId userId;
+    private String userId;
 
     private String token;
 

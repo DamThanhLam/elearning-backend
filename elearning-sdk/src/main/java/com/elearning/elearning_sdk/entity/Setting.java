@@ -2,7 +2,7 @@ package com.elearning.elearning_sdk.entity;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.bson.types.ObjectId;
+
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -16,9 +16,9 @@ import java.time.LocalDateTime;
 @Setter
 public class Setting {
     @Id
-    private ObjectId id;
+    private String id;
 
-    private ObjectId userId;
+    private String userId;
 
     private String name;
 

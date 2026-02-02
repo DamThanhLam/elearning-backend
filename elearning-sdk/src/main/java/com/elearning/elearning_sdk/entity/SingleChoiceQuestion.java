@@ -3,7 +3,7 @@ package com.elearning.elearning_sdk.entity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import org.bson.types.ObjectId;
+
 import org.springframework.data.annotation.TypeAlias;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -16,5 +16,5 @@ public class SingleChoiceQuestion extends Question {
     private List<Answer> answers;
 
     @Field(name = "correct_answer_id")
-    private ObjectId correctAnswerId;
+    private String correctAnswerId;
 }

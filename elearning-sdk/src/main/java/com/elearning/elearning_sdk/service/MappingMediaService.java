@@ -9,7 +9,7 @@ import com.elearning.elearning_sdk.model.MappingMediaModel;
 import com.elearning.elearning_sdk.model.SaveMappingMediaModel;
 import com.elearning.elearning_sdk.repository.MappingMediaRepository;
 import lombok.AllArgsConstructor;
-import org.bson.types.ObjectId;
+
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -26,8 +26,8 @@ public class MappingMediaService {
     private final ModelToEntity modelToEntity;
     private final EntityToModel entityToModel;
 
-    public Mono<ObjectId> addMappingMedia(
-        ObjectId classId,
+    public Mono<String> addMappingMedia(
+        String classId,
         SaveMappingMediaModel model
     ) {
         MappingMedia entity = modelToEntity.toEntity(model);
@@ -37,7 +37,7 @@ public class MappingMediaService {
     }
 
     public Mono<Void> updateMappingMedia(
-        ObjectId id,
+        String id,
         SaveMappingMediaModel model
     ) {
         return getMappingMediaByIdOrThrow(id)
@@ -49,12 +49,12 @@ public class MappingMediaService {
                 .then();
     }
 
-    public Flux<ObjectId> getMediaIdByEntityId(ObjectId entityId) {
+    public Flux<String> getMediaIdByEntityId(String entityId) {
         return mappingMediaRepository.getMediaIdByEntityId(entityId);
     }
 
-    public Mono<ObjectId> getFirstMediaIdByEntityIdAndType(
-        ObjectId entityId,
+    public Mono<String> getFirstMediaIdByEntityIdAndType(
+        String entityId,
         MappingMediaType type
     ) {
         return mappingMediaRepository.getFirstMediaIdByEntityIdAndType(
@@ -63,8 +63,8 @@ public class MappingMediaService {
         );
     }
 
-    public Flux<ObjectId> getMediaIdByEntityIdAndType(
-        ObjectId entityId,
+    public Flux<String> getMediaIdByEntityIdAndType(
+        String entityId,
         MappingMediaType type
     ) {
         return mappingMediaRepository.getMediaIdByEntityIdAndType(
@@ -73,7 +73,7 @@ public class MappingMediaService {
         );
     }
 
-    public Mono<Map<ObjectId, MappingMediaModel>> getMediaMapByEntityIds(List<ObjectId> entityIds) {
+    public Mono<Map<String, MappingMediaModel>> getMediaMapByEntityIds(List<String> entityIds) {
         return mappingMediaRepository.getMediaIdByEntityIdIn(entityIds)
             .map(entityToModel::toModel)
             .collectMap(
@@ -82,7 +82,7 @@ public class MappingMediaService {
             );
     }
 
-    public Mono<MappingMediaModel> getMappingMediaById(ObjectId id) {
+    public Mono<MappingMediaModel> getMappingMediaById(String id) {
         return mappingMediaRepository.findById(id)
             .map(entityToModel::toModel);
     }
@@ -93,7 +93,7 @@ public class MappingMediaService {
     }
 
     private Mono<MappingMedia> getMappingMediaByIdOrThrow(
-        ObjectId id
+        String id
     ) {
         return mappingMediaRepository.findById(id)
             .switchIfEmpty(Mono.error(new NotFoundException("MappingMedia")));

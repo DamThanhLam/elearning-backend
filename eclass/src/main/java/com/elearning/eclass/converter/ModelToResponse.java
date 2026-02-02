@@ -18,7 +18,7 @@ public class ModelToResponse {
         MediaModel avatar
     ) {
         return ECLassTeacherResponse.builder()
-            .id(model.getId().toHexString())
+            .id(model.getId())
             .displayName(model.getDisplayName())
             .avatar(avatar)
             .updatedAt(clock.toTimestamp(model.getUpdatedAt()))

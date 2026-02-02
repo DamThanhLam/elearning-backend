@@ -11,7 +11,7 @@ import com.elearning.user.request.*;
 import com.elearning.user.validation.UserValidator;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.bson.types.ObjectId;
+
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -56,7 +56,7 @@ public class UserController {
 
     @PutMapping("/profiles")
     public Mono<ResponseEntity<Object>> userProfilesPut(
-        @AuthenticatedUserId ObjectId authenticatedUserId,
+        @AuthenticatedUserId String authenticatedUserId,
         @RequestBody Mono<SaveUserInformationRequest> request
     ) {
         return request.flatMap(req ->
@@ -77,7 +77,7 @@ public class UserController {
 
     @PostMapping("/change-password")
     public Mono<ResponseEntity<Object>> changePassword(
-        @AuthenticatedUserId ObjectId authenticatedUserId,
+        @AuthenticatedUserId String authenticatedUserId,
         @RequestBody Mono<ChangePasswordRequest> request
     ) {
         return request.flatMap(req ->
@@ -160,7 +160,7 @@ public class UserController {
 
     @GetMapping("/information")
     public Mono<ResponseEntity<Object>> userInformation(
-        @AuthenticatedUserId ObjectId userId
+        @AuthenticatedUserId String userId
     ) {
         return userService.getUserInformationById(userId)
             .map(ResponseEntity::ok);

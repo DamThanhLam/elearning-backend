@@ -8,7 +8,7 @@ import com.elearning.elearning_sdk.model.MediaModel;
 import com.elearning.elearning_sdk.model.SaveMediaModel;
 import com.elearning.elearning_sdk.repository.MediaRepository;
 import lombok.AllArgsConstructor;
-import org.bson.types.ObjectId;
+
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
@@ -20,13 +20,13 @@ public class MediaService {
     private final ModelToEntity modelToEntity;
     private final EntityToModel entityToModel;
 
-    public Mono<ObjectId> addMedia(SaveMediaModel model) {
+    public Mono<String> addMedia(SaveMediaModel model) {
         Media entity = modelToEntity.toEntity(model);
         return mediaRepository.save(entity)
             .map(Media::getId);
     }
 
-    public Mono<Void> updateMedia(ObjectId id, SaveMediaModel model) {
+    public Mono<Void> updateMedia(String id, SaveMediaModel model) {
         return getMediaByIdOrThrow(id)
             .map(entity -> {
                 modelToEntity.mergeToEntity(model, entity);
@@ -36,12 +36,12 @@ public class MediaService {
             .then();
     }
 
-    public Mono<MediaModel> getMedia(ObjectId id) {
+    public Mono<MediaModel> getMedia(String id) {
         return mediaRepository.findById(id)
             .map(entityToModel::toModel);
     }
 
-    private Mono<Media> getMediaByIdOrThrow(ObjectId id) {
+    private Mono<Media> getMediaByIdOrThrow(String id) {
         return mediaRepository.findById(id)
             .switchIfEmpty(Mono.error(new NotFoundException("media")));
     }

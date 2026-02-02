@@ -2,7 +2,7 @@ package com.elearning.gateway.filter;
 
 import com.elearning.elearning_sdk.service.UserService;
 import lombok.AllArgsConstructor;
-import org.bson.types.ObjectId;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
@@ -34,7 +34,7 @@ public class EmailVerifiedAfterAuthenticationFilter implements WebFilter {
         }
         return userService
             .getUserById(
-                new ObjectId(userId)
+                new String(userId)
             )
             .flatMap(user -> {
                 if (user.isEmailVerified()) {

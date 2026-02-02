@@ -11,7 +11,7 @@ import com.elearning.elearning_sdk.model.UserModel;
 import com.elearning.elearning_sdk.repository.UserRepository;
 import com.elearning.elearning_sdk.util.ClockProxy;
 import lombok.AllArgsConstructor;
-import org.bson.types.ObjectId;
+
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
@@ -28,13 +28,13 @@ public class UserService {
     private final EntityToModel entityToModel;
     private final ClockProxy clockProxy;
 
-    public Mono<ObjectId> addUser(SaveUserModel model) {
+    public Mono<String> addUser(SaveUserModel model) {
         User entity = modelToEntity.toEntity(model);
         return userRepository.save(entity)
             .map(User::getId);
     }
 
-    public Mono<Void> updateUser(ObjectId id, SaveUserInformationModel model) {
+    public Mono<Void> updateUser(String id, SaveUserInformationModel model) {
         return getUserByIdOrThrow(id)
             .map(entity -> {
                 modelToEntity.mergeToEntity(model, entity);
@@ -44,7 +44,7 @@ public class UserService {
             .then();
     }
 
-    public Mono<UserModel> getUserById(ObjectId id) {
+    public Mono<UserModel> getUserById(String id) {
         return userRepository.findById(id)
             .map(entityToModel::toModel);
     }
@@ -54,7 +54,7 @@ public class UserService {
             .map(entityToModel::toModel);
     }
 
-    private Mono<User> getUserByIdOrThrow(ObjectId id) {
+    private Mono<User> getUserByIdOrThrow(String id) {
         return userRepository.findById(id)
             .switchIfEmpty(Mono.error(new NotFoundException("User")));
     }
@@ -81,13 +81,13 @@ public class UserService {
             .switchIfEmpty(Mono.error(new NotFoundException("User")));
     }
 
-    public Mono<ObjectId> getIdByEmail(String username) {
+    public Mono<String> getIdByEmail(String username) {
         return getUserByEmailOrThrow(username)
             .map(User::getId);
     }
 
     public Mono<Void> updatePasswordById(
-        ObjectId id,
+        String id,
         String newPassword
     ) {
         return getUserByIdOrThrow(id)
@@ -112,7 +112,7 @@ public class UserService {
             .then();
     }
 
-    public Mono<UserInformationModel> getUserInformationById(ObjectId userId) {
+    public Mono<UserInformationModel> getUserInformationById(String userId) {
         return userRepository.findById(userId)
             .map(entityToModel::toUserInformationModel);
     }
@@ -124,8 +124,8 @@ public class UserService {
             );
     }
 
-    public Mono<Map<ObjectId, UserInformationModel>> getUserInformationMapByIds(
-        List<ObjectId> userIds
+    public Mono<Map<String, UserInformationModel>> getUserInformationMapByIds(
+        List<String> userIds
     ) {
         return userRepository.findAllById(userIds)
             .map(entityToModel::toUserInformationModel)
@@ -136,7 +136,7 @@ public class UserService {
     }
 
     public Mono<String> getEmailByUserId(
-        ObjectId userId
+        String userId
     ) {
         return userRepository.findEmailById(userId);
     }

@@ -8,7 +8,7 @@ import com.elearning.elearning_sdk.model.EClassModel;
 import com.elearning.elearning_sdk.model.SaveEClassModel;
 import com.elearning.elearning_sdk.repository.EClassRepository;
 import lombok.AllArgsConstructor;
-import org.bson.types.ObjectId;
+
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -23,8 +23,8 @@ public class EClassService {
     private final ModelToEntity modelToEntity;
     private final EntityToModel entityToModel;
 
-    public Mono<ObjectId> addEClass(
-        ObjectId teacherId,
+    public Mono<String> addEClass(
+        String teacherId,
         SaveEClassModel model
     ) {
         EClass entity = modelToEntity.toEntity(model);
@@ -34,7 +34,7 @@ public class EClassService {
     }
 
     public Mono<Void> updateEClass(
-        ObjectId id,
+        String id,
         SaveEClassModel model
     ) {
         return getEClassByIdOrThrow(id)
@@ -46,24 +46,24 @@ public class EClassService {
             .then();
     }
 
-    public Mono<EClassModel> getEClassById(ObjectId id) {
+    public Mono<EClassModel> getEClassById(String id) {
         return eclassRepository.findById(id)
             .map(entityToModel::toModel);
     }
 
-    public Flux<EClassModel> getEClassByIds(List<ObjectId> ids) {
+    public Flux<EClassModel> getEClassByIds(List<String> ids) {
         return eclassRepository.findAllById(ids)
             .map(entityToModel::toModel);
     }
 
     public Flux<EClassModel> getEClassesByTeacherId(
-        ObjectId teacherId
+        String teacherId
     ) {
         return eclassRepository.findByTeacherId(teacherId)
             .map(entityToModel::toModel);
     }
 
-    private Mono<EClass> getEClassByIdOrThrow(ObjectId id) {
+    private Mono<EClass> getEClassByIdOrThrow(String id) {
         return eclassRepository.findById(id)
             .switchIfEmpty(Mono.error(new NotFoundException("eclass")));
     }

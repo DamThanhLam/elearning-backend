@@ -2,7 +2,6 @@ package com.elearning.elearning_sdk.entity;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.bson.types.ObjectId;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -10,6 +9,7 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.lang.String;
 import java.time.LocalDateTime;
 
 @Getter
@@ -17,15 +17,15 @@ import java.time.LocalDateTime;
 @Document(collection = "notifications")
 public class Notification {
     @Id
-    private ObjectId id;
+    private String id;
 
     @Indexed
     @Field(name = "from_id")
-    private ObjectId fromId;
+    private String fromId;
 
     @Indexed
     @Field(name = "to_user_id")
-    private ObjectId toUserId;
+    private String toUserId;
 
     private String title;
 

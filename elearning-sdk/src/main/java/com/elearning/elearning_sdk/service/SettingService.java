@@ -7,7 +7,7 @@ import com.elearning.elearning_sdk.model.SaveSettingModel;
 import com.elearning.elearning_sdk.model.SettingModel;
 import com.elearning.elearning_sdk.repository.SettingRepository;
 import lombok.AllArgsConstructor;
-import org.bson.types.ObjectId;
+
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -20,14 +20,14 @@ public class SettingService {
     private final EntityToModel entityToModel;
     private final ModelToEntity modelToEntity;
 
-    public Mono<ObjectId> save(SaveSettingModel model) {
+    public Mono<String> save(SaveSettingModel model) {
         Setting entity = modelToEntity.toEntity(model);
         return settingRepository
             .save(entity)
             .map(Setting::getId);
     }
 
-    public Mono<ObjectId> saveDataMetaUnique(SaveSettingModel model) {
+    public Mono<String> saveDataMetaUnique(SaveSettingModel model) {
         return settingRepository
             .findByUserIdAndGroupAndName(
                 model.getUserId(),
@@ -43,7 +43,7 @@ public class SettingService {
     }
 
     public Flux<SettingModel> getSettingsByUserIdAndGroup(
-        ObjectId userId,
+        String userId,
         String group
     ) {
         return settingRepository
@@ -52,7 +52,7 @@ public class SettingService {
     }
 
     public Mono<SettingModel> getSettingByUserIdAndGroupAndName(
-        ObjectId userId,
+        String userId,
         String group,
         String name
     ) {

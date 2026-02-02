@@ -5,7 +5,7 @@ import com.auth.idp.converter.ModelToEntity;
 import com.auth.idp.entity.UserSession;
 import com.auth.idp.model.UserSessionModel;
 import com.auth.idp.repository.UserSessionRepository;
-import org.bson.types.ObjectId;
+
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -41,7 +41,7 @@ public class UserSessionService {
     }
 
     public Mono<List<UserSessionModel>> getUserSessionByUserIdAndActive(
-        ObjectId userId,
+        String userId,
         boolean active
     ) {
         return userSessionRepository

@@ -10,7 +10,7 @@ import com.elearning.elearning_sdk.model.NotificationModel;
 import com.elearning.elearning_sdk.model.SaveNotificationModel;
 import com.elearning.elearning_sdk.repository.NotificationRepository;
 import lombok.AllArgsConstructor;
-import org.bson.types.ObjectId;
+
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
@@ -22,13 +22,13 @@ public class NotificationService {
     private final ModelToEntity modelToEntity;
     private final EntityToModel entityToModel;
 
-    public Mono<ObjectId> addNotification(SaveNotificationModel model) {
+    public Mono<String> addNotification(SaveNotificationModel model) {
         Notification entity = modelToEntity.toEntity(model);
         return notificationRepository.save(entity)
             .map(Notification::getId);
     }
 
-    public Mono<Void> updateNotificationStatus(ObjectId id, NotificationStatus status) {
+    public Mono<Void> updateNotificationStatus(String id, NotificationStatus status) {
         return getNotificationByIdOrThrow(id)
             .map(entity -> {
                 entity.setStatus(status);
@@ -38,13 +38,13 @@ public class NotificationService {
             .then();
     }
 
-    public Mono<NotificationModel> getNotificationById(ObjectId id) {
+    public Mono<NotificationModel> getNotificationById(String id) {
         return notificationRepository.findById(id)
             .map(entityToModel::toModel);
     }
 
     public Mono<Integer> countNotificationsByStatusNotRead(
-        ObjectId toUserId,
+        String toUserId,
         NotificationChannel channel
     ) {
         return notificationRepository.countNotificationsByToUserIdAndChannelAndStatus(
@@ -54,7 +54,7 @@ public class NotificationService {
         );
     }
 
-    private Mono<Notification> getNotificationByIdOrThrow(ObjectId id) {
+    private Mono<Notification> getNotificationByIdOrThrow(String id) {
         return notificationRepository.findById(id)
             .switchIfEmpty(Mono.error(new NotFoundException("notification")));
     }

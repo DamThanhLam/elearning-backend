@@ -4,7 +4,7 @@ import com.elearning.elearning_sdk.annotation.AuthenticatedUserId;
 import com.elearning.elearning_sdk.service.UserSettingService;
 import com.elearning.user.request.SaveTeacherNotificationSettingRequest;
 import lombok.AllArgsConstructor;
-import org.bson.types.ObjectId;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,7 +25,7 @@ public class TeacherSettingController {
 
     @PutMapping("/teachers/settings/notifications")
     public Mono<ResponseEntity<Object>> teacherSettingNotifications(
-        @AuthenticatedUserId ObjectId authenticatedUserId,
+        @AuthenticatedUserId String authenticatedUserId,
         @RequestBody Mono<SaveTeacherNotificationSettingRequest> request
     ) {
         return request

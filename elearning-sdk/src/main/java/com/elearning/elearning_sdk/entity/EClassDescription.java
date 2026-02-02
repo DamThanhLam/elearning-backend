@@ -3,7 +3,7 @@ package com.elearning.elearning_sdk.entity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import org.bson.types.ObjectId;
+
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -19,10 +19,10 @@ import java.time.LocalDateTime;
 public class EClassDescription {
 
     @Id
-    private ObjectId id;
+    private String id;
 
     @Indexed
-    private ObjectId eclassId;
+    private String eclassId;
 
     private String description;
 

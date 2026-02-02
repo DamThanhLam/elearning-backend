@@ -10,7 +10,7 @@ import com.elearning.elearning_sdk.annotation.AuthenticatedUserId;
 import com.elearning.elearning_sdk.service.EClassService;
 import com.pagination.mongodb.model.PaginationModel;
 import lombok.AllArgsConstructor;
-import org.bson.types.ObjectId;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -30,7 +30,7 @@ public class EClassController {
 
     @PostMapping("/teachers/me/eclasses")
     public Mono<ResponseEntity<Object>> eclassPost(
-        @AuthenticatedUserId ObjectId userId,
+        @AuthenticatedUserId String userId,
         @RequestBody Mono<SaveEClassRequest> request
     ) {
         return request.flatMap(rq ->
@@ -42,7 +42,7 @@ public class EClassController {
                             userId,
                             requestToModel.toModel(rq)
                         )
-                        .thenReturn(ResponseEntity.ok().build())
+                        .map(ResponseEntity::ok)
                 ))
         );
     }

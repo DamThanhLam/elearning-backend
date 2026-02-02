@@ -5,7 +5,7 @@ import com.elearning.elearning_sdk.converter.ModelToEntity;
 import com.elearning.elearning_sdk.model.SaveSettingModel;
 import com.elearning.elearning_sdk.model.SettingModel;
 import com.elearning.elearning_sdk.repository.SettingRepository;
-import org.bson.types.ObjectId;
+
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -30,7 +30,7 @@ public class UserSettingService extends SettingService {
     }
 
     public Mono<Void> saveNotificationSettings(
-        ObjectId userId,
+        String userId,
         Map<String, Object> metaValueMapByMetaKey
     ) {
         return Flux
@@ -49,7 +49,7 @@ public class UserSettingService extends SettingService {
     }
 
     public Flux<SettingModel> getUserNotificationSettings(
-        ObjectId userId
+        String userId
     ) {
         return getSettingsByUserIdAndGroup(
             userId,
@@ -58,7 +58,7 @@ public class UserSettingService extends SettingService {
     }
 
     public Mono<String> getTeacherNotificationEmailNewSubmissionOrDefault(
-        ObjectId userId,
+        String userId,
         String defaultValue
     ) {
         return getSettingByUserIdAndGroupAndName(
@@ -71,7 +71,7 @@ public class UserSettingService extends SettingService {
     }
 
     public Mono<String> getTeacherNotificationEmailGradeUpdateOrDefault(
-        ObjectId userId,
+        String userId,
         String defaultValue
     ) {
         return getSettingByUserIdAndGroupAndName(
@@ -84,7 +84,7 @@ public class UserSettingService extends SettingService {
     }
 
     public Mono<String> getTeacherNotificationPushNewSubmissionOrDefault(
-        ObjectId userId,
+        String userId,
         String defaultValue
     ) {
         return getSettingByUserIdAndGroupAndName(
@@ -97,7 +97,7 @@ public class UserSettingService extends SettingService {
     }
 
     public Mono<String> getTeacherNotificationPushGradeUpdateOrDefault(
-        ObjectId userId,
+        String userId,
         String defaultValue
     ) {
         return getSettingByUserIdAndGroupAndName(
@@ -110,7 +110,7 @@ public class UserSettingService extends SettingService {
     }
 
     public Mono<String> getStudentNotificationPushNewSubmissionOrDefault(
-        ObjectId userId,
+        String userId,
         String defaultValue
     ) {
         return getSettingByUserIdAndGroupAndName(
@@ -123,7 +123,7 @@ public class UserSettingService extends SettingService {
     }
 
     public Mono<String> getStudentNotificationPushFeedbackOrDefault(
-        ObjectId userId,
+        String userId,
         String defaultValue
     ) {
         return getSettingByUserIdAndGroupAndName(
@@ -136,7 +136,7 @@ public class UserSettingService extends SettingService {
     }
 
     private SaveSettingModel buildSaveSettingModel(
-        ObjectId userId,
+        String userId,
         String group,
         String name,
         String value

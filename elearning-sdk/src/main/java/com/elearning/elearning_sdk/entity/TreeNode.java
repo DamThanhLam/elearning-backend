@@ -2,7 +2,7 @@ package com.elearning.elearning_sdk.entity;
 
 import lombok.Builder;
 import lombok.Data;
-import org.bson.types.ObjectId;
+
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -16,14 +16,14 @@ import java.util.List;
 @Document(collection = "tree_nodes")
 public class TreeNode {
     @Id
-    private ObjectId id;
+    private String id;
 
     @Field(name = "user_id")
-    private ObjectId userId;
+    private String userId;
 
     private String name;
 
-    private List<ObjectId> children;
+    private List<String> children;
 
     private NodeType type;
 
