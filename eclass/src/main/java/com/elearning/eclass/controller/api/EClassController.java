@@ -10,7 +10,6 @@ import com.elearning.elearning_sdk.annotation.AuthenticatedUserId;
 import com.elearning.elearning_sdk.service.EClassService;
 import com.pagination.mongodb.model.PaginationModel;
 import lombok.AllArgsConstructor;
-
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -63,5 +62,23 @@ public class EClassController {
             )
             .map(ResponseEntity::ok)
             .defaultIfEmpty(ResponseEntity.ok().build());
+    }
+
+    @GetMapping("/teachers/me/eclasses/{id}")
+    public Mono<ResponseEntity<Object>> getEClassById(
+        @PathVariable String id
+    ) {
+        return eclassControllerService
+            .getEClassTeacher(id)
+            .map(ResponseEntity::ok);
+    }
+
+    @GetMapping("/teachers/me/eclasses/{id}/statistics")
+    public Mono<ResponseEntity<Object>> getEClassStatistics(
+        @PathVariable String id
+    ) {
+        return eclassControllerService
+            .getEClassStatistic(id)
+            .map(ResponseEntity::ok);
     }
 }

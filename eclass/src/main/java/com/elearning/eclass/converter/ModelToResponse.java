@@ -1,6 +1,7 @@
 package com.elearning.eclass.converter;
 
 import com.elearning.eclass.response.ECLassResponse;
+import com.elearning.eclass.response.ECLassStatisticResponse;
 import com.elearning.elearning_sdk.model.EClassModel;
 import com.elearning.elearning_sdk.model.MediaModel;
 import com.elearning.elearning_sdk.util.ClockProxy;
@@ -13,7 +14,7 @@ public class ModelToResponse {
 
     private final ClockProxy clock;
 
-    public ECLassResponse toModel(
+    public ECLassResponse toResponse(
         EClassModel model,
         MediaModel avatar,
         Long students,
@@ -29,6 +30,18 @@ public class ModelToResponse {
             .createdAt(clock.toTimestamp(model.getCreatedAt()))
             .updatedAt(clock.toTimestamp(model.getUpdatedAt()))
             .status(model.getStatus())
+            .build();
+    }
+
+    public ECLassStatisticResponse toECLassStatisticResponse(
+        long totalStudents,
+        long openAssignments,
+        long upcomingAssignments
+    ) {
+        return ECLassStatisticResponse.builder()
+            .totalAssignments(totalStudents)
+            .openAssignments(openAssignments)
+            .upcomingAssignments(upcomingAssignments)
             .build();
     }
 }

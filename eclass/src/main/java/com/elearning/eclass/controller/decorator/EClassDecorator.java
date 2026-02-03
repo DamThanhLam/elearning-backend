@@ -2,6 +2,7 @@ package com.elearning.eclass.controller.decorator;
 
 import com.elearning.eclass.converter.ModelToResponse;
 import com.elearning.eclass.response.ECLassResponse;
+import com.elearning.elearning_sdk.entity.AssignmentStatus;
 import com.elearning.elearning_sdk.entity.MappingMediaType;
 import com.elearning.elearning_sdk.model.EClassModel;
 import com.elearning.elearning_sdk.service.AssignmentService;
@@ -28,28 +29,35 @@ public class EClassDecorator {
     public Mono<PaginationModel<ECLassResponse>> decorateToEClassTeacherResponse(
         PaginationModel<EClassModel> pagination
     ) {
-        return pagination.mapAsync(eclassModel -> {
-            String eclassId = eclassModel.getId();
-            Mono<Long> numberMembers = eclassMemberService.countEClassMember(eclassId);
-            Mono<Long> numberAssignments = assignmentService.countAssignmentByEClassId(eclassId);
-            return mappingMediaService
-                .getFirstMediaIdByEntityIdAndType(
-                    eclassModel.getId(),
-                    MappingMediaType.AVATAR
-                )
-                .flatMap(mediaService::getMedia)
-                .defaultIfEmpty(DEFAULT_AVATAR)
-                .flatMap(avatar ->
-                    Mono.zip(numberMembers, numberAssignments)
-                        .map(mapper ->
-                            modelToResponse.toModel(
-                                eclassModel,
-                                avatar,
-                                mapper.getT1(),
-                                mapper.getT2()
-                            )
+        return pagination.mapAsync(this::decorateToEClassTeacherResponse);
+    }
+
+    public Mono<ECLassResponse> decorateToEClassTeacherResponse(
+        EClassModel model
+    ) {
+        String eclassId = model.getId();
+        Mono<Long> numberMembers = eclassMemberService.countEClassMember(eclassId);
+        Mono<Long> numberAssignments = assignmentService.countAssignmentByEClassIdByStatus(
+            eclassId,
+            AssignmentStatus.OPEN
+        );
+        return mappingMediaService
+            .getFirstMediaIdByEntityIdAndType(
+                model.getId(),
+                MappingMediaType.AVATAR
+            )
+            .flatMap(mediaService::getMedia)
+            .defaultIfEmpty(DEFAULT_AVATAR)
+            .flatMap(avatar ->
+                Mono.zip(numberMembers, numberAssignments)
+                    .map(mapper ->
+                        modelToResponse.toResponse(
+                            model,
+                            avatar,
+                            mapper.getT1(),
+                            mapper.getT2()
                         )
-                );
-        });
+                    )
+            );
     }
 }
