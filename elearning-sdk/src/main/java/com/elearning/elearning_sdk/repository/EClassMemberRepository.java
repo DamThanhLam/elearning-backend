@@ -1,7 +1,7 @@
 package com.elearning.elearning_sdk.repository;
 
 import com.elearning.elearning_sdk.entity.EClassMember;
-
+import com.elearning.elearning_sdk.entity.EClassMemberStatus;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Mono;
@@ -16,5 +16,10 @@ public interface EClassMemberRepository extends ReactiveMongoRepository<EClassMe
     Mono<EClassMember> findByUserIdAndClassId(
         String userId,
         String classId
+    );
+
+    Mono<Long> countByClassIdAndStatus(
+        String classId,
+        EClassMemberStatus status
     );
 }

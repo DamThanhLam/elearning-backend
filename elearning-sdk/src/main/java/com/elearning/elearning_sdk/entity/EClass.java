@@ -11,6 +11,7 @@ import org.springframework.data.mongodb.core.index.TextIndexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Getter
@@ -32,6 +33,10 @@ public class EClass {
     @TextIndexed
     @Field(name = "short_description")
     private String shortDescription;
+
+    private BigDecimal originalPrice;
+
+    private BigDecimal price;
 
     private EClassStatus status;
 

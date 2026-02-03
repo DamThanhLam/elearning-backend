@@ -1,9 +1,7 @@
 package com.elearning.elearning_sdk.entity;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -29,8 +27,8 @@ public class Assignment {
     private String id;
 
     @Indexed
-    @Field(name = "class_id")
-    private String classId;
+    @Field(name = "eclass_id")
+    private String eclassId;
 
     @Field(name = "display_name")
     private String displayName;

@@ -4,7 +4,7 @@ import com.elearning.eclass.controller.service.EClassControllerService;
 import com.elearning.eclass.converter.RequestToModel;
 import com.elearning.eclass.pagination.EClassPaginationFilter;
 import com.elearning.eclass.request.SaveEClassRequest;
-import com.elearning.eclass.response.ECLassTeacherResponse;
+import com.elearning.eclass.response.ECLassResponse;
 import com.elearning.eclass.validation.EClassValidator;
 import com.elearning.elearning_sdk.annotation.AuthenticatedUserId;
 import com.elearning.elearning_sdk.service.EClassService;
@@ -48,7 +48,7 @@ public class EClassController {
     }
 
     @GetMapping("/teachers/me/eclasses")
-    public Mono<ResponseEntity<PaginationModel<ECLassTeacherResponse>>> eclassGet(
+    public Mono<ResponseEntity<PaginationModel<ECLassResponse>>> eclassGet(
         @RequestParam(required = false) String nextPageToken,
         @RequestParam(required = false) String previousPageToken,
         @RequestParam(required = false) String displayName,

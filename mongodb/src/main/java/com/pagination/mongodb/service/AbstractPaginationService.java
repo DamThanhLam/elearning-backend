@@ -7,10 +7,13 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import reactor.core.publisher.Mono;
 
+import java.util.logging.Logger;
+
 @AllArgsConstructor
 public abstract class AbstractPaginationService<M, R, F extends DefaultPaginationFilter>
     implements DefaultPaginationService<M, R, F> {
 
+    private final Logger logger = Logger.getLogger(AbstractPaginationService.class.getName());
     private final DefaultPaginationRepository<R, F> repository;
 
     @Override
@@ -19,6 +22,7 @@ public abstract class AbstractPaginationService<M, R, F extends DefaultPaginatio
         String nextPageToken,
         Pageable pageable
     ) {
+        logger.info("processing next pagination");
         return repository.getNextPagination(filter, nextPageToken, pageable)
             .map(items -> items.map(this::converterToModel));
     }
@@ -29,6 +33,7 @@ public abstract class AbstractPaginationService<M, R, F extends DefaultPaginatio
         String previousPageToken,
         Pageable pageable
     ) {
+        logger.info("processing previous pagination");
         return repository.getPreviousPagination(filter, previousPageToken, pageable)
             .map(items -> items.map(this::converterToModel));
     }

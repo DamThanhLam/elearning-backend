@@ -6,6 +6,7 @@ import com.pagination.mongodb.pagination.PaginationTokenCodec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
@@ -15,6 +16,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.lang.reflect.InvocationTargetException;
@@ -61,12 +63,61 @@ public abstract class AbstractPaginationRepository<R, F extends DefaultPaginatio
         Pageable pageable,
         boolean isNextPage
     ) {
-        List<Sort.Order> orders = pageable.getSort() != null ?
-            pageable.getSort().get().toList() : new ArrayList<>();
+        List<Sort.Order> orders = new ArrayList<>();
+        pageable.getSort().forEach(orders::add);
         Query query = buildQuery(filter, pageToken, pageable, orders, isNextPage);
-        return template.find(query, getResultType())
+        log.info("query={}", query);
+        return execute(query)
             .collectList()
-            .map(list -> buildPaginationModel(list, orders));
+            .flatMap(items -> {
+                if (items.isEmpty()) {
+                    return Mono.just(
+                        PaginationModel.<R>builder().build()
+                    );
+                }
+                log.info("result items={}", items.size());
+                R firstItem = items.get(0);
+                R lastItem = items.get(items.size() - 1);
+                String previousToken = getPageToken(firstItem, orders);
+                String nextToken = getPageToken(lastItem, orders);
+                Pageable pageableCheck = PageRequest.of(
+                    0,
+                    1,
+                    pageable.getSort()
+                );
+                Mono<Boolean> hasPrevious = execute(buildQuery(
+                    filter,
+                    previousToken,
+                    pageableCheck,
+                    orders,
+                    false
+                ))
+                    .hasElements();
+                Mono<Boolean> hasNext = execute(buildQuery(
+                    filter,
+                    nextToken,
+                    pageableCheck,
+                    orders,
+                    false
+                ))
+                    .hasElements();
+                return Mono.zip(hasPrevious, hasNext)
+                    .map(mapper ->
+                        PaginationModel.<R>builder()
+                            .hasPrevious(mapper.getT1())
+                            .hasNext(mapper.getT2())
+                            .items(items)
+                            .nextPageToken(nextToken)
+                            .previousPageToken(previousToken)
+                            .build()
+                    );
+            });
+    }
+
+    private Flux<R> execute(
+        Query query
+    ) {
+        return template.find(query, getResultType());
     }
 
     private Query buildQuery(
@@ -77,38 +128,22 @@ public abstract class AbstractPaginationRepository<R, F extends DefaultPaginatio
         boolean isNextPage
     ) {
         Assert.notNull(pageable, "pageable must not be null");
+        log.info("buildQuery: pageToken={}", pageToken);
+        log.info("buildQuery: orders={}", orders);
+        log.info("buildQuery: pageable={}", pageable);
         Query query = new Query();
 
         for (CriteriaDefinition criteria : filter.queryOperator()) {
             query.addCriteria(criteria);
         }
+        if (StringUtils.hasText(pageToken)) {
+            query.addCriteria(generateCriteriaPageToken(pageToken, orders, isNextPage));
+        }
         return query
-            .addCriteria(generateCriteriaPageToken(pageToken, orders, isNextPage))
             .limit(pageable.getPageSize())
             .skip(pageable.getOffset())
             .with(pageable.getSort().reverse());
     }
-
-    private PaginationModel<R> buildPaginationModel(
-        List<R> list,
-        List<Sort.Order> orders
-    ) {
-        if (list.isEmpty()) {
-            return PaginationModel.<R>builder().build();
-        }
-        R firstItem = list.get(0);
-        R lastItem = list.get(list.size() - 1);
-        String previousToken = getPageToken(firstItem, orders);
-        String nextToken = getPageToken(lastItem, orders);
-        return PaginationModel.<R>builder()
-            .items(list)
-            .previousPageToken(previousToken)
-            .nextPageToken(nextToken)
-            .hasPrevious(!previousToken.isEmpty())
-            .hasNext(!nextToken.isEmpty())
-            .build();
-    }
-
 
     private String getPageToken(R result, List<Sort.Order> orders) {
         Map<String, Object> keyToken = new HashMap<>();

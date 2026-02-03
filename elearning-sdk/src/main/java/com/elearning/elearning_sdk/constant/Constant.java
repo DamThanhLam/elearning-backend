@@ -1,5 +1,7 @@
 package com.elearning.elearning_sdk.constant;
 
+import com.elearning.elearning_sdk.model.MediaModel;
+
 public class Constant {
 
     public static final String NOTIFICATION_SETTINGS = "notification_settings";
@@ -28,4 +30,8 @@ public class Constant {
     public static final boolean STUDENT_NOTIFICATION_SETTING_PUSH_NEW_SUBMISSION_DEFAULT =false;
 
     public static final String HEADER_NAME_AUTHENTICATED_USER_ID = "authenticatedUserId";
+
+    public static final MediaModel DEFAULT_AVATAR = MediaModel.builder()
+        .url("/")
+        .build();
 }
