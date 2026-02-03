@@ -1,6 +1,5 @@
 package com.elearning.elearning_sdk.entity;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,7 +13,7 @@ import java.util.List;
 @TypeAlias("multiple_questions_assignment")
 public class MultipleQuestionsAssignment extends Assignment {
     @Field(name = "question_ids")
-    private List<String> questionIds;
+    private List<QuestionId> questionIds;
 
     @Field(name = "question_count")
     private int questionCount;

@@ -1,6 +1,5 @@
 package com.elearning.elearning_sdk.entity;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.TypeAlias;
@@ -11,5 +10,5 @@ import org.springframework.data.annotation.TypeAlias;
 public class ProgrammingAssignment extends Assignment {
     private ProgrammingLanguage language;
 
-    private String version;
+    private String languageVersion;
 }

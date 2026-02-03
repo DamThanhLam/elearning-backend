@@ -6,7 +6,7 @@ import org.springframework.data.annotation.TypeAlias;
 
 @Getter
 @Setter
-@TypeAlias("essay_question")
-public class EssayQuestion extends Question {
-    private String answer;
+@TypeAlias("essay_question_answer")
+public class EssayQuestionAnswer extends QuestionAnswer {
+    String answer;
 }

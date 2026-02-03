@@ -1,9 +1,7 @@
 package com.elearning.elearning_sdk.entity;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -34,6 +32,9 @@ public class EClassMember {
     private String userId;
 
     private EClassMemberStatus status;
+
+    @Field("joined_at")
+    private LocalDateTime joinedAt;
 
     @Field(name = "created_at")
     @CreatedDate
