@@ -7,7 +7,7 @@ import com.elearning.eclass.response.ECLassResponse;
 import com.elearning.eclass.response.ECLassStatisticResponse;
 import com.elearning.eclass.service.EClassPaginationService;
 import com.elearning.elearning_sdk.entity.AssignmentStatus;
-import com.elearning.elearning_sdk.service.AssignmentService;
+import com.elearning.elearning_sdk.service.ECLassAssignmentService;
 import com.elearning.elearning_sdk.service.EClassService;
 import com.pagination.mongodb.model.PaginationModel;
 import com.pagination.mongodb.utils.PaginationExecutor;
@@ -25,7 +25,7 @@ public class EClassControllerService {
     private final EClassService eclassService;
     private final EClassPaginationService eclassPaginationService;
     private final EClassDecorator eclassDecorator;
-    private final AssignmentService assignmentService;
+    private final ECLassAssignmentService ECLassAssignmentService;
     private final ModelToResponse modelToResponse;
 
     public Mono<PaginationModel<ECLassResponse>> getEClassTeacherPagination(
@@ -53,11 +53,11 @@ public class EClassControllerService {
     public Mono<ECLassStatisticResponse> getEClassStatistic(
         String id
     ) {
-        Mono<Long> totalAssignments = assignmentService
+        Mono<Long> totalAssignments = ECLassAssignmentService
             .countTotalAssignmentByEClassId(id);
-        Mono<Long> openAssignments = assignmentService
+        Mono<Long> openAssignments = ECLassAssignmentService
             .countAssignmentByEClassIdByStatus(id, AssignmentStatus.OPEN);
-        Mono<Long> upcomingAssignments = assignmentService.countUpcomingAssignments(
+        Mono<Long> upcomingAssignments = ECLassAssignmentService.countUpcomingAssignments(
             id,
             UPCOMING_ASSIGNMENT_DAYS
         );
