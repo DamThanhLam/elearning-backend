@@ -1,7 +1,9 @@
 package com.elearning.eclass.converter;
 
+import com.elearning.eclass.response.AssignmentResponse;
 import com.elearning.eclass.response.ECLassResponse;
 import com.elearning.eclass.response.ECLassStatisticResponse;
+import com.elearning.elearning_sdk.model.AssignmentModel;
 import com.elearning.elearning_sdk.model.EClassModel;
 import com.elearning.elearning_sdk.model.MediaModel;
 import com.elearning.elearning_sdk.util.ClockProxy;
@@ -30,6 +32,26 @@ public class ModelToResponse {
             .createdAt(clock.toTimestamp(model.getCreatedAt()))
             .updatedAt(clock.toTimestamp(model.getUpdatedAt()))
             .status(model.getStatus())
+            .build();
+    }
+
+    public AssignmentResponse toResponse(
+        AssignmentModel model
+    ) {
+        if (model == null) {
+            return null;
+        }
+
+        return AssignmentResponse.builder()
+            .id(model.getId())
+            .displayName(model.getDisplayName())
+            .shortDescription(model.getShortDescription())
+            .type(model.getType())
+            .startAt(clock.toTimestamp(model.getStartAt()))
+            .dueAt(clock.toTimestamp(model.getDueAt()))
+            .status(model.getStatus())
+            .createdAt(clock.toTimestamp(model.getCreatedAt()))
+            .updatedAt(clock.toTimestamp(model.getUpdatedAt()))
             .build();
     }
 

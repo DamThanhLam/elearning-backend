@@ -28,7 +28,7 @@ public class EClassControllerService {
     private final ECLassAssignmentService ECLassAssignmentService;
     private final ModelToResponse modelToResponse;
 
-    public Mono<PaginationModel<ECLassResponse>> getEClassTeacherPagination(
+    public Mono<PaginationModel<ECLassResponse>> getEClassPagination(
         EClassPaginationFilter filter,
         String nextPageToken,
         String prevPageToken,
@@ -42,12 +42,12 @@ public class EClassControllerService {
                 prevPageToken,
                 pageable
             )
-            .flatMap(eclassDecorator::decorateToEClassTeacherResponse);
+            .flatMap(eclassDecorator::decorateToEClassResponse);
     }
 
     public Mono<ECLassResponse> getEClassTeacher(String id) {
         return eclassService.getEClassById(id)
-            .flatMap(eclassDecorator::decorateToEClassTeacherResponse);
+            .flatMap(eclassDecorator::decorateToEClassResponse);
     }
 
     public Mono<ECLassStatisticResponse> getEClassStatistic(

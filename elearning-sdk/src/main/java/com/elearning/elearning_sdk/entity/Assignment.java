@@ -16,12 +16,6 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Document(collection = "assignments")
-@CompoundIndexes({
-    @CompoundIndex(
-        name = "assignment_start_at_and_due_at",
-        def = "{'start_at': -1, 'due_at': 1}"
-    )
-})
 public class Assignment {
     @Id
     private String id;
@@ -38,12 +32,15 @@ public class Assignment {
 
     private AssignmentType type;
 
+    @Indexed
     @Field(name = "start_at")
     private LocalDateTime startAt;
 
+    @Indexed
     @Field(name = "due_at")
     private LocalDateTime dueAt;
 
+    @Indexed
     private AssignmentStatus status;
 
     @Field(name = "created_at")

@@ -26,13 +26,13 @@ public class EClassDecorator {
     private final MappingMediaService mappingMediaService;
     private final MediaService mediaService;
 
-    public Mono<PaginationModel<ECLassResponse>> decorateToEClassTeacherResponse(
+    public Mono<PaginationModel<ECLassResponse>> decorateToEClassResponse(
         PaginationModel<EClassModel> pagination
     ) {
-        return pagination.mapAsync(this::decorateToEClassTeacherResponse);
+        return pagination.mapAsync(this::decorateToEClassResponse);
     }
 
-    public Mono<ECLassResponse> decorateToEClassTeacherResponse(
+    public Mono<ECLassResponse> decorateToEClassResponse(
         EClassModel model
     ) {
         String eclassId = model.getId();

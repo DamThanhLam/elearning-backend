@@ -54,7 +54,7 @@ public class EClassController {
         @PageableDefault(size = 15, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
     ) {
         return eclassControllerService
-            .getEClassTeacherPagination(
+            .getEClassPagination(
                 EClassPaginationFilter.builder().key(displayName).build(),
                 nextPageToken,
                 previousPageToken,

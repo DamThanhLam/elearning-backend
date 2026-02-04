@@ -138,4 +138,23 @@ public class EntityToModel {
             .updatedAt(entity.getUpdatedAt())
             .build();
     }
+
+    public AssignmentModel toModel(Assignment entity) {
+        if (entity == null) {
+            return null;
+        }
+
+        return AssignmentModel.builder()
+            .id(entity.getId())
+            .eclassId(entity.getEclassId())
+            .displayName(entity.getDisplayName())
+            .shortDescription(entity.getShortDescription())
+            .type(entity.getType())
+            .startAt(entity.getStartAt())
+            .dueAt(entity.getDueAt())
+            .status(entity.getStatus())
+            .createdAt(entity.getCreatedAt())
+            .updatedAt(entity.getUpdatedAt())
+            .build();
+    }
 }
