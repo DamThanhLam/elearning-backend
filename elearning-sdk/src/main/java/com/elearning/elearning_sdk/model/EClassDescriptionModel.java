@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Builder
 @Getter
-public class AssignmentDescriptionModel {
-    private String assignmentId;
+public class EClassDescriptionModel {
+    private String eclassId;
     private String description;
 }

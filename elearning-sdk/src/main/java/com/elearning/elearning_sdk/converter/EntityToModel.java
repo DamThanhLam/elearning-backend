@@ -139,7 +139,9 @@ public class EntityToModel {
             .build();
     }
 
-    public AssignmentModel toModel(Assignment entity) {
+    public AssignmentModel toModel(
+        Assignment entity
+    ) {
         if (entity == null) {
             return null;
         }
@@ -156,5 +158,48 @@ public class EntityToModel {
             .createdAt(entity.getCreatedAt())
             .updatedAt(entity.getUpdatedAt())
             .build();
+    }
+
+    public AssignmentModel toModel(
+        AssignmentModel.AssignmentModelBuilder<?, ?> builder,
+        Assignment entity
+    ) {
+        if (entity == null) {
+            return null;
+        }
+
+        return builder
+            .id(entity.getId())
+            .eclassId(entity.getEclassId())
+            .displayName(entity.getDisplayName())
+            .shortDescription(entity.getShortDescription())
+            .type(entity.getType())
+            .startAt(entity.getStartAt())
+            .dueAt(entity.getDueAt())
+            .status(entity.getStatus())
+            .createdAt(entity.getCreatedAt())
+            .updatedAt(entity.getUpdatedAt())
+            .build();
+    }
+
+    public AssignmentModel toModel(
+        MultipleQuestionsAssignment entity
+    ) {
+        return toModel(
+          MultipleQuestionsAssignmentModel.builder()
+              .questionCount(entity.getQuestionCount()),
+            entity
+        );
+    }
+
+    public AssignmentModel toModel(
+        ProgrammingAssignment entity
+    ) {
+        return toModel(
+            ProgrammingAssignmentModel.builder()
+                .language(entity.getLanguage())
+                .languageVersion(entity.getLanguageVersion()),
+            entity
+        );
     }
 }

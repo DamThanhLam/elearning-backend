@@ -5,7 +5,7 @@ import com.elearning.eclass.response.ECLassResponse;
 import com.elearning.elearning_sdk.entity.AssignmentStatus;
 import com.elearning.elearning_sdk.entity.MappingMediaType;
 import com.elearning.elearning_sdk.model.EClassModel;
-import com.elearning.elearning_sdk.service.ECLassAssignmentService;
+import com.elearning.elearning_sdk.service.AssignmentService;
 import com.elearning.elearning_sdk.service.ECLassMemberService;
 import com.elearning.elearning_sdk.service.MappingMediaService;
 import com.elearning.elearning_sdk.service.MediaService;
@@ -21,7 +21,7 @@ import static com.elearning.elearning_sdk.constant.Constant.DEFAULT_AVATAR;
 public class EClassDecorator {
 
     private final ModelToResponse modelToResponse;
-    private final ECLassAssignmentService ECLassAssignmentService;
+    private final AssignmentService AssignmentService;
     private final ECLassMemberService eclassMemberService;
     private final MappingMediaService mappingMediaService;
     private final MediaService mediaService;
@@ -37,7 +37,7 @@ public class EClassDecorator {
     ) {
         String eclassId = model.getId();
         Mono<Long> numberMembers = eclassMemberService.countEClassMember(eclassId);
-        Mono<Long> numberAssignments = ECLassAssignmentService.countAssignmentByEClassIdByStatus(
+        Mono<Long> numberAssignments = AssignmentService.countAssignmentByEClassIdByStatus(
             eclassId,
             AssignmentStatus.OPEN
         );

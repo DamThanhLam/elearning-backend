@@ -7,6 +7,7 @@ import com.elearning.eclass.request.SaveEClassRequest;
 import com.elearning.eclass.response.ECLassResponse;
 import com.elearning.eclass.validation.EClassValidator;
 import com.elearning.elearning_sdk.annotation.AuthenticatedUserId;
+import com.elearning.elearning_sdk.service.EClassDescriptionService;
 import com.elearning.elearning_sdk.service.EClassService;
 import com.pagination.mongodb.model.PaginationModel;
 import lombok.AllArgsConstructor;
@@ -17,6 +18,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/v1")
 @AllArgsConstructor
@@ -26,6 +29,7 @@ public class EClassController {
     private final RequestToModel requestToModel;
     private final EClassControllerService eclassControllerService;
     private final EClassService eclassService;
+    private final EClassDescriptionService eClassDescriptionService;
 
     @PostMapping("/teachers/me/eclasses")
     public Mono<ResponseEntity<Object>> eclassPost(
@@ -42,6 +46,26 @@ public class EClassController {
                             requestToModel.toModel(rq)
                         )
                         .map(ResponseEntity::ok)
+                ))
+        );
+    }
+
+    @PutMapping("/teachers/me/eclasses/{id}")
+    public Mono<ResponseEntity<Object>> eclassPut(
+        @AuthenticatedUserId String userId,
+        @PathVariable String id,
+        @RequestBody Mono<SaveEClassRequest> request
+    ) {
+        return request.flatMap(rq ->
+            eclassValidator.validate(userId, id, rq)
+                .map(errors -> ResponseEntity.badRequest().body((Object) errors))
+                .switchIfEmpty(Mono.defer(() ->
+                    eclassService
+                        .updateEClass(
+                            id,
+                            requestToModel.toModel(rq)
+                        )
+                        .then(Mono.just(ResponseEntity.ok().build()))
                 ))
         );
     }
@@ -71,6 +95,18 @@ public class EClassController {
         return eclassControllerService
             .getEClassTeacher(id)
             .map(ResponseEntity::ok);
+    }
+
+    @GetMapping("/teachers/me/eclasses/{id}/description")
+    public Mono<ResponseEntity<Object>> getEClassDescriptionById(
+        @PathVariable String id
+    ) {
+        return eClassDescriptionService
+            .getContent(id)
+            .map(description ->
+                ResponseEntity.ok()
+                    .body(Map.of("description", description))
+            );
     }
 
     @GetMapping("/teachers/me/eclasses/{id}/statistics")

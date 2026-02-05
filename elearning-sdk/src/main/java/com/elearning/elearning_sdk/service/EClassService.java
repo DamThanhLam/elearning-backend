@@ -19,6 +19,7 @@ import java.util.List;
 @AllArgsConstructor
 public class EClassService {
 
+    private final EClassDescriptionService eclassDescriptionService;
     private final EClassRepository eclassRepository;
     private final ModelToEntity modelToEntity;
     private final EntityToModel entityToModel;
@@ -30,7 +31,15 @@ public class EClassService {
         EClass entity = modelToEntity.toEntity(model);
         entity.setTeacherId(teacherId);
         return eclassRepository.save(entity)
-            .map(EClass::getId);
+            .flatMap(eclass -> {
+                String id = eclass.getId();
+                return eclassDescriptionService
+                    .save(
+                        id,
+                        model.getDescription()
+                    )
+                    .thenReturn(id);
+            });
     }
 
     public Mono<Void> updateEClass(
@@ -42,8 +51,14 @@ public class EClassService {
                 modelToEntity.mergeToEntity(model, entity);
                 return entity;
             })
-            .map(eclassRepository::save)
-            .then();
+            .flatMap(eclassRepository::save)
+            .then(
+                eclassDescriptionService
+                    .save(
+                        id,
+                        model.getDescription()
+                    )
+            );
     }
 
     public Mono<EClassModel> getEClassById(String id) {

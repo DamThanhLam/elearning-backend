@@ -25,6 +25,7 @@ public class AssignmentDescriptionService {
 
     public Mono<String> getContent(String assignmentId) {
         return assignmentDescriptionRepository
-            .getAssignmentDescriptionByAssignmentId(assignmentId);
+            .getDescriptionByAssignmentId(assignmentId)
+            .map(AssignmentDescription::getDescription);
     }
 }

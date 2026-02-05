@@ -8,7 +8,16 @@ import java.util.Map;
 
 @Component
 public class EClassValidator {
+
     public Mono<Map<String, String>> validate(SaveEClassRequest request) {
+        return Mono.empty();
+    }
+
+    public Mono<Map<String, String>> validate(
+        String userId,
+        String eclassId,
+        SaveEClassRequest request
+    ) {
         return Mono.empty();
     }
 }

@@ -2,12 +2,12 @@ package com.elearning.elearning_sdk.model;
 
 import com.elearning.elearning_sdk.entity.AssignmentStatus;
 import com.elearning.elearning_sdk.entity.AssignmentType;
-import lombok.Builder;
 import lombok.Getter;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 
-@Builder
+@SuperBuilder
 @Getter
 public class AssignmentModel {
     private String id;
