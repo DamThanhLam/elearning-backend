@@ -25,7 +25,6 @@ public class AssignmentController {
     private final AssignmentValidator assignmentValidator;
     private final AssignmentService eclassAssignmentService;
     private final AssignmentControllerService assignmentControllerService;
-    private final AssignmentService assignmentService;
     private final AssignmentDescriptionService assignmentDescriptionService;
 
     @PostMapping("/teachers/me/eclasses/{id}/assignments")

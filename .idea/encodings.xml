@@ -12,5 +12,6 @@
     <file url="file://$PROJECT_DIR$/mongodb/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/theme/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/user/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/workspace-service/src/main/java" charset="UTF-8" />
   </component>
 </project>

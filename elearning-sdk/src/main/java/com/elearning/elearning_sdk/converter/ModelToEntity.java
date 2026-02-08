@@ -58,6 +58,37 @@ public class ModelToEntity {
         return entity;
     }
 
+    public TreeNode toEntity(SaveTreeNodeModel model) {
+        TreeNode entity = createEntity(model);
+        mergeToEntity(model, entity);
+        entity.setCreatedAt(entity.getUpdatedAt());
+        return entity;
+    }
+
+    private TreeNode createEntity(SaveTreeNodeModel model) {
+        if (model instanceof SaveFileNodeModel childModel) {
+            FileNode entity = new FileNode();
+            entity.setBucket(childModel.getBucket());
+            entity.setKey(childModel.getKey());
+            entity.setChecksum(childModel.getChecksum());
+            entity.setType(childModel.getType());
+            entity.setMimeType(childModel.getMimeType());
+            return entity;
+        }
+        return new TreeNode();
+    }
+
+
+    public void mergeToEntity(
+        SaveTreeNodeModel model,
+        TreeNode entity
+    ) {
+        entity.setName(model.getName());
+        entity.setStatus(model.getStatus());
+        entity.setType(model.getType());
+        entity.setUpdatedAt(clock.nowDateTime());
+    }
+
     public void mergeToEntity(
         SaveECLassAssignmentModel model,
         Assignment entity
