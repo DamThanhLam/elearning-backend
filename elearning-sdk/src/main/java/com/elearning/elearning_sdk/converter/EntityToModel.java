@@ -202,4 +202,36 @@ public class EntityToModel {
             entity
         );
     }
+
+    public TreeNodeModel toModel(TreeNode entity) {
+        if (entity == null) {
+            return null;
+        }
+        if (entity instanceof FileNode subEntity) {
+            return toModel(
+                FileNodeModel.builder()
+                    .bucket(subEntity.getBucket())
+                    .key(subEntity.getKey())
+                    .mimeType(subEntity.getMimeType())
+                    .storageProvider(subEntity.getStorageProvider())
+                    .checksum(subEntity.getChecksum()),
+                subEntity
+            );
+        }
+        return toModel(TreeNodeModel.builder(), entity);
+    }
+
+    public TreeNodeModel toModel(
+        TreeNodeModel.TreeNodeModelBuilder<?, ?> modelBuilder,
+        TreeNode entity
+    ) {
+        return modelBuilder.id(entity.getId())
+            .name(entity.getName())
+            .children(entity.getChildren())
+            .type(entity.getType())
+            .status(entity.getStatus())
+            .createdAt(entity.getCreatedAt())
+            .updatedAt(entity.getUpdatedAt())
+            .build();
+    }
 }

@@ -1,12 +1,15 @@
 package com.elearning.elearning_sdk.service;
 
+import com.elearning.elearning_sdk.converter.EntityToModel;
 import com.elearning.elearning_sdk.converter.ModelToEntity;
 import com.elearning.elearning_sdk.entity.TreeNode;
 import com.elearning.elearning_sdk.exception.NotFoundException;
 import com.elearning.elearning_sdk.model.SaveTreeNodeModel;
+import com.elearning.elearning_sdk.model.TreeNodeModel;
 import com.elearning.elearning_sdk.repository.TreeNodeRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
@@ -19,6 +22,7 @@ public class TreeNodeService {
 
     private final ModelToEntity modelToEntity;
     private final TreeNodeRepository treeNodeRepository;
+    private final EntityToModel entityToModel;
 
     public Mono<String> addNode(
         String parentId,
@@ -88,6 +92,18 @@ public class TreeNodeService {
             .then(
                 treeNodeRepository.deleteById(id)
             );
+    }
+
+    public Flux<TreeNodeModel> getTreeNodeByIds(
+        List<String> ids
+    ) {
+        return treeNodeRepository.findByIdIn(ids)
+            .map(entityToModel::toModel);
+    }
+
+    public Mono<TreeNodeModel> getTreeNodeById(String id) {
+        return treeNodeRepository.findById(id)
+            .map(entityToModel::toModel);
     }
 
     private Mono<TreeNode> getNodeByIdOrThrow(
